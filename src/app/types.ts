@@ -15,7 +15,7 @@
  * ExerciseDTO: Represents an exercise entity based on the exercises definition.
  */
 
-import type { Json } from "@/app/db/database.types";
+import type { Json } from "@/db/database.types";
 
 export interface WorkoutStructure {
   workoutName: string;
