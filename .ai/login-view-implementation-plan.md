@@ -62,7 +62,7 @@ Widok będzie dostępny pod ścieżką `/login`.
 - Wywołanie funkcji `login(formData: FormData)` lub `signup(formData: FormData)` z pliku `src/app/login/actions.ts` po walidacji danych.
 - Przekazywanie danych formularza do endpointu jako obiekt FormData z kluczami "email" i "password".
 - Obsługa odpowiedzi API:
-  - W przypadku sukcesu następuje rewalidacja strony i przekierowanie do `/workouts`.
+  - W przypadku sukcesu następuje rewalidacja strony i przekierowanie do `/app/workouts`.
 
 ## 8. Interakcje użytkownika
 

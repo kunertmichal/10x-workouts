@@ -21,7 +21,7 @@ export async function login(formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/workouts");
+  redirect("/app/workouts");
 }
 
 export async function signup(formData: FormData) {
@@ -37,5 +37,5 @@ export async function signup(formData: FormData) {
     return { error: "Cannot sign up" };
   }
   revalidatePath("/", "layout");
-  redirect("/workouts");
+  redirect("/app/workouts");
 }
