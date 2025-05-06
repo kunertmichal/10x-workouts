@@ -11,10 +11,10 @@
 
 ### Ekran logowania
 
-- Ścieżka widoku: `/signin`
+- Ścieżka widoku: `/login`
 - Główny cel: Autoryzacja użytkownika przy użyciu e-maila i hasła (integracja z Supabase Auth).
 - Kluczowe informacje: Formularz logowania, komunikaty błędów walidacji.
-- Kluczowe komponenty: Formularz logowania, inputy, przycisk submit, AlertDialog do potwierdzeń.
+- Kluczowe komponenty: Formularz logowania, inputy, przycisk logowania oraz rejestracji.
 - Uwagi UX/dostępność: Widoczne komunikaty błędów, nawigacja klawiaturowa, czytelne etykiety.
 
 ### Profil użytkownika

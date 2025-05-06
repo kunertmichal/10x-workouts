@@ -5,8 +5,6 @@ Frontend - Next z React dla komponentów interaktywnych:
 - TypeScript 5 dla statycznego typowania kodu i lepszego wsparcia IDE
 - Tailwind 4 pozwala na wygodne stylowanie aplikacji
 - Shadcn/ui zapewnia bibliotekę dostępnych komponentów React, na których oprzemy UI
-- axios do zapytań HTTP
-- Zustand do zarządzania stanem aplikacji
 - Zod do walidacji formularzy
 - React Hook Form do obsługi formularzy
 

@@ -17,6 +17,11 @@
 
 import type { Json } from "@/db/database.types";
 
+export interface AuthDTO {
+  email: string;
+  password: string;
+}
+
 export interface WorkoutStructure {
   workoutName: string;
   exercises: {

@@ -20,8 +20,7 @@ alwaysApply: true
 When introducing changes to the project, always follow the directory structure below:
 
 - `./src` - source code
-- `./src/pages` - Next pages
-- `./src/pages/api` - API endpoints
+- `./src/app` - Next pages
 - `./src/types.ts` - Shared types for backend and frontend (Entities, DTOs)
 - `./src/components` - Client-side components written in Next and React
 - `./src/components/ui` - Client-side components from Shadcn/ui
