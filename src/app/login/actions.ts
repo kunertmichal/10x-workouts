@@ -2,6 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { AuthInvalidCredentialsError } from "@supabase/supabase-js";
 
 export async function login(formData: FormData) {
   const supabase = await createClient();
@@ -12,9 +13,13 @@ export async function login(formData: FormData) {
     password: formData.get("password") as string,
   };
   const { error } = await supabase.auth.signInWithPassword(data);
-  if (error) {
-    redirect("/error");
+
+  if (error instanceof AuthInvalidCredentialsError) {
+    return { error: "Invalid credentials" };
+  } else if (error) {
+    return { error: "Something went wrong" };
   }
+
   revalidatePath("/", "layout");
   redirect("/workouts");
 }
@@ -29,7 +34,7 @@ export async function signup(formData: FormData) {
   };
   const { error } = await supabase.auth.signUp(data);
   if (error) {
-    redirect("/error");
+    return { error: "Cannot sign up" };
   }
   revalidatePath("/", "layout");
   redirect("/workouts");
