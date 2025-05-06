@@ -5,9 +5,20 @@ alwaysApply: false
 ---
 ## Frontend
 
-### General Guidelines
+### Guidelines for REACT
 
-- Prioritize SSR and use client components only when needed
+#### NEXT_JS
+
+- Use App Router and Server Components for improved performance and SEO
+- Implement route handlers for API endpoints instead of the pages/api directory
+- Use server actions for form handling and data mutations from Server Components
+- Leverage Next.js Image component with proper sizing for core web vitals optimization
+- Implement the Metadata API for dynamic SEO optimization
+- Use React Server Components for data fetching operations to reduce client-side JavaScript
+- Implement Streaming and Suspense for improved loading states
+- Use the new Link component without requiring a child <a> tag
+- Leverage parallel routes for complex layouts and parallel data fetching
+- Implement intercepting routes for modal patterns and nested UIs
 
 ### Guidelines for Styling
 
