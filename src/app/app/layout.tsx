@@ -1,5 +1,13 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import Link from "next/link";
 
 export default async function Layout({
   children,
@@ -17,8 +25,39 @@ export default async function Layout({
 
   return (
     <div className="max-w-4xl mx-auto">
-      <nav>links</nav>
-      {children}
+      <NavigationMenu>
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <Link href="/app/workouts">
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Workouts
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <Link href="/app/workout-builder">
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Builder
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <Link href="/app/profile">
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Profile
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem className="ml-auto">
+            <form action="/auth/signout" method="post">
+              <button className="button block" type="submit">
+                Sign out
+              </button>
+            </form>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
+      <main className="px-4">{children}</main>
     </div>
   );
 }
