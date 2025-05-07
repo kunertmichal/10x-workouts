@@ -28,21 +28,21 @@ export default async function Layout({
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <Link href="/app/workouts">
+            <Link href="/app/workouts" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Workouts
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <Link href="/app/workout-builder">
+            <Link href="/app/creator" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Builder
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <Link href="/app/profile">
+            <Link href="/app/profile" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Profile
               </NavigationMenuLink>
@@ -50,7 +50,7 @@ export default async function Layout({
           </NavigationMenuItem>
           <NavigationMenuItem className="ml-auto">
             <form action="/auth/signout" method="post">
-              <button className="button block" type="submit">
+              <button className={navigationMenuTriggerStyle()} type="submit">
                 Sign out
               </button>
             </form>
