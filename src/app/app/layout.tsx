@@ -8,7 +8,6 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 
 export default async function Layout({
   children,
