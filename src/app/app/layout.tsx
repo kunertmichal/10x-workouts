@@ -24,43 +24,45 @@ export default async function Layout({
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <NavigationMenu>
-        <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuLink
-              asChild
-              className={navigationMenuTriggerStyle()}
-            >
-              <Link href="/app/workouts">Workouts</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink
-              asChild
-              className={navigationMenuTriggerStyle()}
-            >
-              <Link href="/app/creator">Builder</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink
-              asChild
-              className={navigationMenuTriggerStyle()}
-            >
-              <Link href="/app/profile">Profile</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem className="ml-auto">
-            <form action="/auth/signout" method="post">
-              <button className={navigationMenuTriggerStyle()} type="submit">
-                Sign out
-              </button>
-            </form>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
-      <main className="px-4">{children}</main>
+    <div className="max-w-4xl mx-auto min-h-screen flex flex-col">
+      <nav className="py-1 border-b border-gray-300 sticky top-0 bg-background">
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
+                <Link href="/app/workouts">Workouts</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
+                <Link href="/app/creator">Builder</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
+                <Link href="/app/profile">Profile</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem className="ml-auto">
+              <form action="/auth/signout" method="post">
+                <button className={navigationMenuTriggerStyle()} type="submit">
+                  Sign out
+                </button>
+              </form>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+      </nav>
+      <main className="px-4 flex flex-1">{children}</main>
     </div>
   );
 }
