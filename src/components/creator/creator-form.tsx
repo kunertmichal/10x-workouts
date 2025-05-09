@@ -2,7 +2,7 @@
 
 import { Plus, Trash } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
+import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -10,34 +10,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { Combobox } from "../ui/combobox";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Combobox } from "@/components/ui/combobox";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "@/components/ui/select";
+import { Toaster } from "@/components/ui/sonner";
 import { exercises } from "@/lib/exercises";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-const workoutSchema = z.object({
-  name: z.string().min(1),
-  exercises: z.array(
-    z.object({
-      id: z.string().nonempty("Exercise is required"),
-      reps: z.number().min(1),
-      breakBetweenSets: z.number().min(1),
-      type: z.enum(["time", "reps"]),
-      sets: z.number().min(1),
-    })
-  ),
-});
-
-type WorkoutFormValues = z.infer<typeof workoutSchema>;
+import { WorkoutFormValues, workoutSchema } from "@/app/app/creator/types";
+import { saveWorkout } from "@/app/app/creator/actions";
 
 const exerciseOptions = exercises.map((exercise) => ({
   value: exercise.id,
@@ -57,9 +45,24 @@ export function CreatorForm() {
     name: "exercises",
   });
 
+  const onSubmit = async (data: WorkoutFormValues) => {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("exercises", JSON.stringify(data.exercises));
+    const result = await saveWorkout(formData);
+    if (result.error) {
+      toast.error(result.error);
+    }
+  };
+
   return (
     <Form {...form}>
-      <form className="space-y-4">
+      <Toaster />
+      <form
+        id="creator-form"
+        className="space-y-4"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         <FormField
           control={form.control}
           name="name"

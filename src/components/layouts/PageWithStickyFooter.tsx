@@ -18,9 +18,9 @@ export function PageWithStickyFooter({
 }: PageWithStickyFooterProps) {
   return (
     <div className={cn("flex flex-1 flex-col pt-6", className)}>
-      <header className="mb-6">{renderHeader()}</header>
+      <header className="mb-6 px-4">{renderHeader()}</header>
 
-      <main className="flex-1 overflow-y-auto pb-4">{children}</main>
+      <main className="flex-1 overflow-y-auto pb-4 px-4">{children}</main>
 
       {footer && (
         <footer

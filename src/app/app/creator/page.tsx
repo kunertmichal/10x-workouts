@@ -20,8 +20,12 @@ export default function CreatorPage() {
       )}
       footer={
         <div className="flex justify-end gap-4">
-          <Button variant="outline">Cancel</Button>
-          <Button>Save</Button>
+          <Button variant="outline" type="reset" form="creator-form">
+            Reset
+          </Button>
+          <Button type="submit" form="creator-form">
+            Save
+          </Button>
         </div>
       }
     >
