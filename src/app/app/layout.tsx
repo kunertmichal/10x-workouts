@@ -25,7 +25,7 @@ export default async function Layout({
 
   return (
     <div className="max-w-4xl mx-auto min-h-screen flex flex-col">
-      <nav className="py-1 border-b border-gray-300 sticky top-0 bg-background">
+      <nav className="py-4 border-b border-gray-300 sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
@@ -62,7 +62,7 @@ export default async function Layout({
           </NavigationMenuList>
         </NavigationMenu>
       </nav>
-      <main className="px-4 flex flex-1">{children}</main>
+      <main className="flex flex-1">{children}</main>
     </div>
   );
 }

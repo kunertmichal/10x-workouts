@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { PageWithStickyFooter } from "@/components/layouts/PageWithStickyFooter";
+import { CreatorForm } from "@/components/creator/creator-form";
 
 export default function CreatorPage() {
   return (
@@ -24,7 +25,9 @@ export default function CreatorPage() {
         </div>
       }
     >
-      <section>todo</section>
+      <section>
+        <CreatorForm />
+      </section>
     </PageWithStickyFooter>
   );
 }
