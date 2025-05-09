@@ -120,3 +120,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+.PopoverContent {
+  width: var(--radix-popover-trigger-width);
+  max-height: var(--radix-popover-content-available-height);
+}

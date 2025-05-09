@@ -3,8 +3,19 @@ import { Check, ChevronsUpDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useFormField } from "@/components/ui/form";
 
 export interface ComboboxOption {
@@ -59,7 +70,10 @@ export function Combobox({
     [value, onValueChange]
   );
 
-  const selectedOption = React.useMemo(() => options.find((option) => option.value === value), [options, value]);
+  const selectedOption = React.useMemo(
+    () => options.find((option) => option.value === value),
+    [options, value]
+  );
 
   return (
     <Popover open={open} onOpenChange={disabled ? undefined : setOpen}>
@@ -72,20 +86,30 @@ export function Combobox({
           aria-invalid={error}
           aria-required={required}
           disabled={disabled}
-          className={cn("justify-between", { "border-destructive": error }, className)}
+          className={cn(
+            "justify-between",
+            { "border-destructive": error },
+            className
+          )}
           style={{ width }}
           data-state={open ? "open" : "closed"}
           name={name}
           id={formItemId}
-          aria-describedby={error ? `${formDescriptionId} ${formMessageId}` : formDescriptionId}
+          aria-describedby={
+            error ? `${formDescriptionId} ${formMessageId}` : formDescriptionId
+          }
         >
           {selectedOption?.label || placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0" style={{ width }}>
+      <PopoverContent className="p-0" style={{ width }}>
         <Command>
-          <CommandInput placeholder={searchPlaceholder} value={searchValue} onValueChange={setSearchValue} />
+          <CommandInput
+            placeholder={searchPlaceholder}
+            value={searchValue}
+            onValueChange={setSearchValue}
+          />
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>
@@ -95,9 +119,17 @@ export function Combobox({
                   value={option.value}
                   onSelect={handleSelect}
                   disabled={option.disabled}
-                  className={cn("cursor-pointer", option.disabled && "cursor-not-allowed opacity-50")}
+                  className={cn(
+                    "cursor-pointer",
+                    option.disabled && "cursor-not-allowed opacity-50"
+                  )}
                 >
-                  <Check className={cn("mr-2 h-4 w-4", value === option.value ? "opacity-100" : "opacity-0")} />
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      value === option.value ? "opacity-100" : "opacity-0"
+                    )}
+                  />
                   {option.label}
                 </CommandItem>
               ))}

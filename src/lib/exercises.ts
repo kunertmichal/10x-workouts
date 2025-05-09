@@ -25,7 +25,7 @@ export const exercises: Exercise[] = [
     name: "Seated calf raise",
     description: "Seated calf raise",
     muscleGroups: ["calves"],
-    equipment: ["kettlebell", "machine", "band", "dumbbell"],
+    equipment: ["kettlebell", "band", "dumbbell"],
   },
   {
     id: "jumping-rope",
