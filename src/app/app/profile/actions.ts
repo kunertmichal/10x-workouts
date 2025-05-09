@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-import { profileSchema, ProfileValues } from "./types";
+import { profileSchema } from "./types";
 
 export async function getProfile() {
   const supabase = await createClient();
