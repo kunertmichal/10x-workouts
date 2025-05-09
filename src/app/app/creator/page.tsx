@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { PageWithStickyFooter } from "@/components/layouts/PageWithStickyFooter";
+import { DefaultLayout } from "@/components/layouts/default-layout";
 import { CreatorForm } from "@/components/creator/creator-form";
 
 export default function CreatorPage() {
   return (
-    <PageWithStickyFooter
-      renderHeader={() => (
+    <DefaultLayout
+      header={
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">New workout</h1>
@@ -17,7 +17,7 @@ export default function CreatorPage() {
             Preview
           </Button>
         </div>
-      )}
+      }
       footer={
         <div className="flex justify-end gap-4">
           <Button variant="outline" type="reset" form="creator-form">
@@ -32,6 +32,6 @@ export default function CreatorPage() {
       <section>
         <CreatorForm />
       </section>
-    </PageWithStickyFooter>
+    </DefaultLayout>
   );
 }

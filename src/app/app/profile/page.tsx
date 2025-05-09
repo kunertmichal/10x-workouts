@@ -1,4 +1,4 @@
-import { PageWithStickyFooter } from "@/components/layouts/PageWithStickyFooter";
+import { DefaultLayout } from "@/components/layouts/default-layout";
 import { ProfileForm } from "@/components/profile/profile-form";
 import { getProfile } from "./actions";
 import { Button } from "@/components/ui/button";
@@ -11,15 +11,15 @@ export default async function ProfilePage() {
   }
 
   return (
-    <PageWithStickyFooter
-      renderHeader={() => (
+    <DefaultLayout
+      header={
         <div>
           <h1 className="text-2xl font-bold">Profile</h1>
           <p className="text-sm text-muted-foreground">
             View and edit your profile information.
           </p>
         </div>
-      )}
+      }
       footer={
         <div className="flex justify-end gap-4">
           <Button variant="outline" type="reset" form="profile-form">
@@ -32,6 +32,6 @@ export default async function ProfilePage() {
       }
     >
       <ProfileForm profile={profile.data} />
-    </PageWithStickyFooter>
+    </DefaultLayout>
   );
 }

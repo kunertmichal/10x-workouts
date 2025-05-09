@@ -1,24 +1,24 @@
 import { cn } from "@/lib/utils";
 import React from "react";
 
-interface PageWithStickyFooterProps {
+interface DefaultLayoutProps {
   children: React.ReactNode;
-  renderHeader: () => React.ReactNode;
+  header: React.ReactNode;
   footer?: React.ReactNode;
   className?: string;
   footerClassName?: string;
 }
 
-export function PageWithStickyFooter({
+export function DefaultLayout({
   children,
-  renderHeader,
+  header,
   footer,
   className,
   footerClassName,
-}: PageWithStickyFooterProps) {
+}: DefaultLayoutProps) {
   return (
     <div className={cn("flex flex-1 flex-col pt-6", className)}>
-      <header className="mb-6 px-4">{renderHeader()}</header>
+      <header className="mb-6 px-4">{header}</header>
 
       <main className="flex-1 overflow-y-auto pb-4 px-4">{children}</main>
 

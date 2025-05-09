@@ -1,5 +1,5 @@
 import { getWorkouts } from "./actions";
-import { PageWithStickyFooter } from "@/components/layouts/PageWithStickyFooter";
+import { DefaultLayout } from "@/components/layouts/default-layout";
 import { WorkoutsList } from "@/components/workouts/workouts-list";
 
 export default async function WorkoutsPage() {
@@ -10,17 +10,17 @@ export default async function WorkoutsPage() {
   }
 
   return (
-    <PageWithStickyFooter
-      renderHeader={() => (
+    <DefaultLayout
+      header={
         <div>
           <h1 className="text-2xl font-bold">Workouts</h1>
           <p className="text-sm text-muted-foreground">
             View, edit, and delete your workouts.
           </p>
         </div>
-      )}
+      }
     >
       <WorkoutsList workouts={workouts.data} />
-    </PageWithStickyFooter>
+    </DefaultLayout>
   );
 }
