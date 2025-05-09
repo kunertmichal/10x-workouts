@@ -1,4 +1,4 @@
-import { DataTable } from "./data-table";
+import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./columns";
 
 type Props = {
