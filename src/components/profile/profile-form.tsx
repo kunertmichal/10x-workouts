@@ -1,6 +1,9 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import { Dumbbell, Zap, X } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -11,24 +14,42 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Separator } from "../ui/separator";
-import { Dumbbell, Zap, X } from "lucide-react";
-import { Combobox } from "../ui/combobox";
+import { Separator } from "@/components/ui/separator";
+import { Combobox } from "@/components/ui/combobox";
 import { equipment } from "@/lib/equipment";
 import { Badge } from "@/components/ui/badge";
+import { profileSchema, ProfileValues } from "@/app/app/profile/types";
+import { updateProfile } from "@/app/app/profile/actions";
+import { Toaster } from "../ui/sonner";
 
 type Props = {
   profile: Profile;
 };
 
 export function ProfileForm({ profile }: Props) {
-  const form = useForm<Profile>({
+  const form = useForm<ProfileValues>({
+    resolver: zodResolver(profileSchema),
     defaultValues: profile,
   });
 
+  const onSubmit = async (data: ProfileValues) => {
+    const formData = new FormData();
+    formData.append("weight", data.weight?.toString() ?? "");
+    formData.append("birthday", data.birthday ?? "");
+    formData.append("equipment", data.equipment?.join(",") ?? "");
+    formData.append("training_goals", data.training_goals ?? "");
+    const result = await updateProfile(formData);
+    if (result.error) {
+      toast.error(result.error);
+    } else {
+      toast.success("Profile updated successfully");
+    }
+  };
+
   return (
     <Form {...form}>
-      <form id="profile-form">
+      <Toaster />
+      <form id="profile-form" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="grid grid-cols-3 gap-4">
           <FormField
             control={form.control}
@@ -39,8 +60,8 @@ export function ProfileForm({ profile }: Props) {
                 <FormControl>
                   <Input
                     type="number"
-                    value={field.value ?? 0}
-                    onChange={(e) => field.onChange(e.target.value)}
+                    value={field.value ? Number(field.value) : 0}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
                   />
                 </FormControl>
                 <FormMessage />

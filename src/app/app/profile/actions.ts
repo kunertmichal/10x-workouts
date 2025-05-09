@@ -1,4 +1,7 @@
+"use server";
+
 import { createClient } from "@/utils/supabase/server";
+import { profileSchema, ProfileValues } from "./types";
 
 export async function getProfile() {
   const supabase = await createClient();
@@ -27,7 +30,7 @@ export async function getProfile() {
   return { data, error: null };
 }
 
-export async function updateProfile(profile: Profile) {
+export async function updateProfile(formData: FormData) {
   const supabase = await createClient();
 
   const { data: authData, error: authError } = await supabase.auth.getUser();
@@ -36,10 +39,23 @@ export async function updateProfile(profile: Profile) {
     return { error: authError?.message ?? "Not authenticated" };
   }
 
+  const rawData = {
+    weight: Number(formData.get("weight")),
+    birthday: formData.get("birthday") as string,
+    equipment: (formData.get("equipment") as string).split(",") ?? [],
+    training_goals: formData.get("training_goals") as string,
+  };
+
+  const validatedFields = profileSchema.safeParse(rawData);
+
+  if (!validatedFields.success) {
+    return { error: "Invalid form data" };
+  }
+
   const { data, error } = await supabase
     .from("profiles")
-    .update(profile)
-    .eq("user_id", profile.user_id);
+    .update(rawData)
+    .eq("user_id", authData.user.id);
 
   if (error) {
     return { error: error.message };
