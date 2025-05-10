@@ -9,6 +9,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ExercisesList } from "@/components/exercises/exercises-list";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
+import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 
 type Props = {
   workout: Workout;
@@ -18,12 +19,19 @@ export function WorkoutView({ workout }: Props) {
   const workoutId = workout.id;
   const [tab, setTab] = useState<"view" | "edit">("view");
   const exercises = workout.structure as Array<Exercise>;
+  const { confirm, ConfirmDialog } = useConfirmDialog();
 
   const onDelete = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const confirmed = await confirm({
+      title: "Delete Workout",
+      description:
+        "Are you sure you want to delete this workout? This action cannot be undone.",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+    });
 
-    // display confirmation modal
-
+    if (!confirmed) return;
     const result = await deleteWorkout(workoutId);
     if (result.error) {
       toast.error(result.error);
@@ -61,6 +69,7 @@ export function WorkoutView({ workout }: Props) {
       footer={tab === "edit" ? <div>Footer</div> : null}
     >
       <Toaster />
+      {ConfirmDialog}
       {tab === "view" ? (
         <ExercisesList exercises={exercises} />
       ) : (
