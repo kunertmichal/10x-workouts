@@ -10,6 +10,7 @@ import { ExercisesList } from "@/components/exercises/exercises-list";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
+import { WorkoutRun } from "./workout-run";
 
 type Props = {
   workout: Workout;
@@ -18,8 +19,9 @@ type Props = {
 export function WorkoutView({ workout }: Props) {
   const workoutId = workout.id;
   const [tab, setTab] = useState<"view" | "edit">("view");
-  const exercises = workout.structure as Array<Exercise>;
+  const [isRunning, setIsRunning] = useState(false);
   const { confirm, ConfirmDialog } = useConfirmDialog();
+  const exercises = workout.structure as Array<Exercise>;
 
   const onDelete = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -38,6 +40,10 @@ export function WorkoutView({ workout }: Props) {
     }
   };
 
+  const onRun = () => {
+    setIsRunning(true);
+  };
+
   return (
     <DefaultLayout
       header={
@@ -53,7 +59,7 @@ export function WorkoutView({ workout }: Props) {
                 <TabsTrigger value="edit">Edit</TabsTrigger>
               </TabsList>
             </Tabs>
-            <Button>
+            <Button onClick={onRun}>
               <Play className="h-4 w-4" />
               Run
             </Button>
@@ -70,6 +76,11 @@ export function WorkoutView({ workout }: Props) {
     >
       <Toaster />
       {ConfirmDialog}
+      <WorkoutRun
+        workout={workout}
+        isRunning={isRunning}
+        setIsRunning={setIsRunning}
+      />
       {tab === "view" ? (
         <ExercisesList exercises={exercises} />
       ) : (
