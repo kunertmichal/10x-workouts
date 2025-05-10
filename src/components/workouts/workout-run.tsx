@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ArrowLeft, ArrowRight, Play } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowLeft, ArrowRight, Play, Pause } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -46,13 +46,56 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
   const [state, setState] = useState({
     currentExerciseIndex: 0,
     currentSet: 1,
+    timeLeft: 0,
+    isTimerRunning: false,
   });
+
   const exercises = workout.structure as ExerciseStructure[];
   const currentExercise = exercises[state.currentExerciseIndex];
   const isCurrentExerciseBreak = isBreak(currentExercise);
   const currentSet = isCurrentExerciseBreak ? 1 : state.currentSet;
   const totalSets = isCurrentExerciseBreak ? 1 : currentExercise.sets;
   const type = isCurrentExerciseBreak ? "time" : currentExercise.type;
+
+  useEffect(() => {
+    if (isCurrentExerciseBreak) {
+      setState((prev) => ({
+        ...prev,
+        timeLeft: currentExercise.reps,
+        isTimerRunning: true,
+      }));
+    } else {
+      setState((prev) => ({
+        ...prev,
+        isTimerRunning: false,
+      }));
+    }
+  }, [state.currentExerciseIndex]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    if (state.isTimerRunning && state.timeLeft > 0) {
+      interval = setInterval(() => {
+        setState((prev) => {
+          if (prev.timeLeft <= 1) {
+            handleNext();
+            return {
+              ...prev,
+              timeLeft: 0,
+              isTimerRunning: false,
+            };
+          }
+          return {
+            ...prev,
+            timeLeft: prev.timeLeft - 1,
+          };
+        });
+      }, 1000);
+    }
+
+    return () => clearInterval(interval);
+  }, [state.isTimerRunning, state.timeLeft]);
 
   const handleNext = () => {
     if (isCurrentExerciseBreak) {
@@ -134,6 +177,13 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
     return (completedSteps / totalSteps) * 100;
   };
 
+  const toggleTimer = () => {
+    setState((prev) => ({
+      ...prev,
+      isTimerRunning: !prev.isTimerRunning,
+    }));
+  };
+
   return (
     <Dialog open={isRunning} onOpenChange={setIsRunning}>
       <DialogContent className="h-[calc(100%-2rem)] sm:max-w-[calc(100%-2rem)] flex flex-col">
@@ -155,14 +205,20 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
           </CardHeader>
           <CardContent>
             <div className="size-[400px] bg-red-100 mx-auto">grafika</div>
-            {type === "time" ? <div>countdown</div> : <div>reps</div>}
+            {type === "time" ? (
+              <div className="text-center text-4xl font-bold mt-4">
+                {state.timeLeft}s
+              </div>
+            ) : (
+              <div>{currentExercise.reps} reps</div>
+            )}
           </CardContent>
           <CardFooter className="mt-auto flex gap-2 items-center justify-center">
             <Button size="icon" variant="outline" onClick={handlePrevious}>
               <ArrowLeft />
             </Button>
-            <Button size="icon" variant="outline">
-              <Play />
+            <Button size="icon" variant="outline" onClick={toggleTimer}>
+              {state.isTimerRunning ? <Pause /> : <Play />}
             </Button>
             <Button size="icon" variant="outline" onClick={handleNext}>
               <ArrowRight />
