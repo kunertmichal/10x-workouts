@@ -80,6 +80,8 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
         setState((prev) => ({
           ...prev,
           currentSet: prev.currentSet + 1,
+          timeLeft: type === "time" ? currentExercise.reps : 0,
+          isTimerRunning: type === "time",
         }));
       } else {
         setState((prev) => ({
@@ -95,14 +97,20 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
     state.currentExerciseIndex,
     currentSet,
     totalSets,
-    setState,
+    type,
+    currentExercise.reps,
   ]);
 
   useEffect(() => {
-    if (isCurrentExerciseBreak) {
+    if (
+      isCurrentExerciseBreak ||
+      (!isCurrentExerciseBreak && type === "time")
+    ) {
       setState((prev) => ({
         ...prev,
-        timeLeft: currentExercise.reps,
+        timeLeft: isCurrentExerciseBreak
+          ? currentExercise.reps
+          : (currentExercise as Exercise).reps,
         isTimerRunning: true,
       }));
     } else {
@@ -112,9 +120,11 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
       }));
     }
   }, [
+    currentExercise,
     currentExercise.reps,
     isCurrentExerciseBreak,
     state.currentExerciseIndex,
+    type,
   ]);
 
   useEffect(() => {
@@ -155,6 +165,8 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
       setState((prev) => ({
         ...prev,
         currentSet: prev.currentSet - 1,
+        timeLeft: type === "time" ? currentExercise.reps : 0,
+        isTimerRunning: type === "time",
       }));
     } else {
       const previousExercise =
@@ -163,6 +175,14 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
         ...prev,
         currentExerciseIndex: Math.max(0, prev.currentExerciseIndex - 1),
         currentSet: !isBreak(previousExercise) ? previousExercise.sets : 1,
+        timeLeft: isBreak(previousExercise)
+          ? previousExercise.reps
+          : (previousExercise as Exercise).type === "time"
+          ? (previousExercise as Exercise).reps
+          : 0,
+        isTimerRunning:
+          isBreak(previousExercise) ||
+          (previousExercise as Exercise).type === "time",
       }));
     }
   };
@@ -225,11 +245,13 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
           <CardContent>
             <div className="size-[400px] bg-red-100 mx-auto">grafika</div>
             {type === "time" ? (
-              <div className="text-center text-4xl font-bold mt-4">
+              <div className="text-4xl font-bold mt-4 text-center">
                 {state.timeLeft}s
               </div>
             ) : (
-              <div>{currentExercise.reps} reps</div>
+              <div className="text-center text-4xl font-bold mt-4">
+                {currentExercise.reps} reps
+              </div>
             )}
           </CardContent>
           <CardFooter className="mt-auto flex gap-2 items-center justify-center">
