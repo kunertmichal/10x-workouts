@@ -16,12 +16,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-type Props = {
-  data: Workout[];
-  columns: ColumnDef<Workout>[];
+type Props<TData> = {
+  data: TData[];
+  columns: ColumnDef<TData>[];
 };
 
-export function DataTable({ data, columns }: Props) {
+export function DataTable<TData>({ data, columns }: Props<TData>) {
   const table = useReactTable({
     data,
     columns,
