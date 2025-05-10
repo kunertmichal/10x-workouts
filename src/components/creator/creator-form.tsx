@@ -94,7 +94,7 @@ export function CreatorForm() {
                       type: "reps",
                       reps: 1,
                       sets: 1,
-                      breakBetweenSets: 1,
+                      breakBetweenSets: 0,
                     })
                   }
                 >
@@ -158,7 +158,7 @@ export function CreatorForm() {
                         <FormControl>
                           <Input
                             type="number"
-                            min={1}
+                            min={0}
                             {...field}
                             onChange={(e) =>
                               field.onChange(Number(e.target.value))

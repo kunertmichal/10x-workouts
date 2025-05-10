@@ -7,7 +7,7 @@ export const workoutSchema = z.object({
       id: z.string().nonempty("Exercise is required"),
       type: z.enum(["time", "reps"]),
       reps: z.number().min(1),
-      breakBetweenSets: z.number().min(1).optional(),
+      breakBetweenSets: z.number().min(0).optional(),
       sets: z.number().min(1).optional(),
     })
   ),
