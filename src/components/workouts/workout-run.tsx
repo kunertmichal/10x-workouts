@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ArrowLeft, ArrowRight, Play, Pause } from "lucide-react";
 import {
   Dialog,
@@ -57,6 +57,47 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
   const totalSets = isCurrentExerciseBreak ? 1 : currentExercise.sets;
   const type = isCurrentExerciseBreak ? "time" : currentExercise.type;
 
+  const handleNext = useCallback(() => {
+    if (isCurrentExerciseBreak) {
+      setState((prev) => ({
+        ...prev,
+        currentExerciseIndex: Math.min(
+          prev.currentExerciseIndex + 1,
+          exercises.length - 1
+        ),
+        currentSet: 1,
+      }));
+    } else {
+      const isLastExercise =
+        state.currentExerciseIndex === exercises.length - 1;
+      const isLastSet = currentSet === totalSets;
+
+      if (isLastExercise && isLastSet) {
+        return;
+      }
+
+      if (currentSet < totalSets) {
+        setState((prev) => ({
+          ...prev,
+          currentSet: prev.currentSet + 1,
+        }));
+      } else {
+        setState((prev) => ({
+          ...prev,
+          currentExerciseIndex: prev.currentExerciseIndex + 1,
+          currentSet: 1,
+        }));
+      }
+    }
+  }, [
+    isCurrentExerciseBreak,
+    exercises.length,
+    state.currentExerciseIndex,
+    currentSet,
+    totalSets,
+    setState,
+  ]);
+
   useEffect(() => {
     if (isCurrentExerciseBreak) {
       setState((prev) => ({
@@ -70,7 +111,11 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
         isTimerRunning: false,
       }));
     }
-  }, [state.currentExerciseIndex]);
+  }, [
+    currentExercise.reps,
+    isCurrentExerciseBreak,
+    state.currentExerciseIndex,
+  ]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -95,41 +140,15 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
     }
 
     return () => clearInterval(interval);
-  }, [state.isTimerRunning, state.timeLeft]);
-
-  const handleNext = () => {
-    if (isCurrentExerciseBreak) {
-      setState((prev) => ({
-        ...prev,
-        currentExerciseIndex: Math.min(
-          prev.currentExerciseIndex + 1,
-          exercises.length - 1
-        ),
-        currentSet: 1,
-      }));
-    } else {
-      const isLastExercise =
-        state.currentExerciseIndex === exercises.length - 1;
-      const isLastSet = currentSet === currentExercise.sets;
-
-      if (isLastExercise && isLastSet) {
-        return;
-      }
-
-      if (currentSet < currentExercise.sets) {
-        setState((prev) => ({
-          ...prev,
-          currentSet: prev.currentSet + 1,
-        }));
-      } else {
-        setState((prev) => ({
-          ...prev,
-          currentExerciseIndex: prev.currentExerciseIndex + 1,
-          currentSet: 1,
-        }));
-      }
-    }
-  };
+  }, [
+    state.isTimerRunning,
+    state.timeLeft,
+    handleNext,
+    isCurrentExerciseBreak,
+    exercises,
+    currentSet,
+    currentExercise,
+  ]);
 
   const handlePrevious = () => {
     if (currentSet > 1) {
