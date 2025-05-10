@@ -20,8 +20,6 @@ export function WorkoutView({ workout }: Props) {
   const exercises = workout.structure as Array<Exercise>;
 
   const onDelete = async (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("deleting");
-
     event.preventDefault();
 
     // display confirmation modal
