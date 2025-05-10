@@ -150,15 +150,7 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
     }
 
     return () => clearInterval(interval);
-  }, [
-    state.isTimerRunning,
-    state.timeLeft,
-    handleNext,
-    isCurrentExerciseBreak,
-    exercises,
-    currentSet,
-    currentExercise,
-  ]);
+  }, [state.isTimerRunning, state.timeLeft, handleNext]);
 
   const handlePrevious = () => {
     if (currentSet > 1) {
