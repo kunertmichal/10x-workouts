@@ -128,7 +128,11 @@ export function CreatorForm() {
                   <FormItem className="flex-1">
                     <FormLabel>Type</FormLabel>
                     <Select
-                      value={field.value}
+                      value={
+                        form.watch(`exercises.${index}.id`) === "break"
+                          ? "time"
+                          : field.value
+                      }
                       onValueChange={field.onChange}
                       disabled={form.watch(`exercises.${index}.id`) === "break"}
                     >
@@ -199,7 +203,8 @@ export function CreatorForm() {
                 render={({ field }) => (
                   <FormItem className="w-32">
                     <FormLabel>
-                      {form.watch(`exercises.${index}.type`) === "time"
+                      {form.watch(`exercises.${index}.type`) === "time" ||
+                      form.watch(`exercises.${index}.id`) === "break"
                         ? "Seconds"
                         : "Reps"}
                     </FormLabel>
