@@ -49,7 +49,11 @@ export function ProfileForm({ profile }: Props) {
   return (
     <Form {...form}>
       <Toaster />
-      <form id="profile-form" onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        id="profile-form"
+        onSubmit={form.handleSubmit(onSubmit)}
+        onReset={() => form.reset()}
+      >
         <div className="grid grid-cols-3 gap-4">
           <FormField
             control={form.control}
