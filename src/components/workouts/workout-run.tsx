@@ -24,6 +24,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
 
 type Props = {
   workout: Workout;
@@ -100,7 +101,6 @@ function transformExercises(exercises: ExerciseStructure[]): Exercise[] {
 
 const createInitialState = (exercise: ExerciseStructure) => {
   return {
-    isAutoplay: false,
     isAudioMuted: false,
     exerciseIndex: 0,
     isTimerRunning: false,
@@ -120,7 +120,6 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
   const nextExercise = exercises[state.exerciseIndex + 1];
   const previousExercise = exercises[state.exerciseIndex - 1];
   const canReset =
-    state.exerciseIndex > 0 &&
     state.timeLeft !== (isTimeExercise(firstExercise) ? firstExercise.reps : 0);
 
   const handleNext = () => {
@@ -267,9 +266,13 @@ function SetIndicator({
   setNumber: number;
   totalSets: number;
 }) {
-  if (id === "break") return null;
   return (
-    <div className="text-sm text-muted-foreground font-semibold">
+    <div
+      className={cn(
+        "text-sm font-semibold",
+        id === "break" ? "text-white" : "text-muted-foreground"
+      )}
+    >
       Set {setNumber} of {totalSets}
     </div>
   );
