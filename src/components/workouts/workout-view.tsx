@@ -77,11 +77,13 @@ export function WorkoutView({ workout }: Props) {
     >
       <Toaster />
       {ConfirmDialog}
-      <WorkoutRun
-        workout={workout}
-        isRunning={isRunning}
-        setIsRunning={setIsRunning}
-      />
+      {isRunning && (
+        <WorkoutRun
+          workout={workout}
+          isRunning={isRunning}
+          setIsRunning={setIsRunning}
+        />
+      )}
       {tab === "view" ? (
         <ExercisesList exercises={exercises} />
       ) : (
