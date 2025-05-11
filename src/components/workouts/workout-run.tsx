@@ -1,5 +1,13 @@
-import { useState, useEffect, useCallback } from "react";
-import { ArrowLeft, ArrowRight, Play, Pause } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Play,
+  Pause,
+  RotateCcw,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -34,6 +42,8 @@ type Exercise = {
   breakBetweenSets: number;
   sets: number;
   reps: number;
+  setNumber: number;
+  totalSets: number;
 };
 
 type ExerciseStructure = Break | Exercise;
@@ -42,181 +52,143 @@ const isBreak = (exercise: ExerciseStructure): exercise is Break => {
   return exercise.id === "break";
 };
 
-export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
-  const [state, setState] = useState({
-    currentExerciseIndex: 0,
-    currentSet: 1,
-    timeLeft: 0,
-    isTimerRunning: false,
+const isTimeExercise = (exercise: ExerciseStructure): exercise is Exercise => {
+  if (isBreak(exercise)) return true;
+  return exercise.type === "time";
+};
+
+function transformExercises(exercises: ExerciseStructure[]): Exercise[] {
+  const result: Exercise[] = [];
+
+  exercises.forEach((exercise) => {
+    if (isBreak(exercise)) {
+      result.push({
+        id: "break",
+        type: "time",
+        reps: exercise.reps,
+        sets: 1,
+        breakBetweenSets: 0,
+        setNumber: 1,
+        totalSets: 1,
+      });
+      return;
+    }
+
+    for (let i = 0; i < exercise.sets; i++) {
+      result.push({
+        ...exercise,
+        setNumber: i + 1,
+        totalSets: exercise.sets,
+      });
+
+      if (i < exercise.sets - 1) {
+        result.push({
+          id: "break",
+          type: "time",
+          reps: exercise.breakBetweenSets,
+          sets: 1,
+          breakBetweenSets: 0,
+          setNumber: 1,
+          totalSets: 1,
+        });
+      }
+    }
   });
 
-  const exercises = workout.structure as ExerciseStructure[];
-  const currentExercise = exercises[state.currentExerciseIndex];
-  const isCurrentExerciseBreak = isBreak(currentExercise);
-  const currentSet = isCurrentExerciseBreak ? 1 : state.currentSet;
-  const totalSets = isCurrentExerciseBreak ? 1 : currentExercise.sets;
-  const type = isCurrentExerciseBreak ? "time" : currentExercise.type;
+  return result;
+}
 
-  const handleNext = useCallback(() => {
-    if (isCurrentExerciseBreak) {
-      setState((prev) => ({
-        ...prev,
-        currentExerciseIndex: Math.min(
-          prev.currentExerciseIndex + 1,
-          exercises.length - 1
-        ),
-        currentSet: 1,
-      }));
-    } else {
-      const isLastExercise =
-        state.currentExerciseIndex === exercises.length - 1;
-      const isLastSet = currentSet === totalSets;
+const createInitialState = (exercise: ExerciseStructure) => {
+  return {
+    isAutoplay: false,
+    isAudioMuted: false,
+    exerciseIndex: 0,
+    isTimerRunning: false,
+    timeLeft: isTimeExercise(exercise) ? exercise.reps : 0,
+  };
+};
 
-      if (isLastExercise && isLastSet) {
-        return;
-      }
+export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
+  const exercises = transformExercises(
+    workout.structure as Array<ExerciseStructure>
+  );
+  const firstExercise = exercises[0];
+  const [state, setState] = useState(createInitialState(firstExercise));
+  const currentExercise = exercises[state.exerciseIndex];
+  const hasNextExercise = state.exerciseIndex < exercises.length - 1;
+  const hasPreviousExercise = state.exerciseIndex > 0;
+  const nextExercise = exercises[state.exerciseIndex + 1];
+  const previousExercise = exercises[state.exerciseIndex - 1];
+  const canReset =
+    state.exerciseIndex > 0 &&
+    state.timeLeft !== (isTimeExercise(firstExercise) ? firstExercise.reps : 0);
 
-      if (currentSet < totalSets) {
-        setState((prev) => ({
-          ...prev,
-          currentSet: prev.currentSet + 1,
-          timeLeft: type === "time" ? currentExercise.reps : 0,
-          isTimerRunning: type === "time",
-        }));
-      } else {
-        setState((prev) => ({
-          ...prev,
-          currentExerciseIndex: prev.currentExerciseIndex + 1,
-          currentSet: 1,
-        }));
-      }
-    }
-  }, [
-    isCurrentExerciseBreak,
-    exercises.length,
-    state.currentExerciseIndex,
-    currentSet,
-    totalSets,
-    type,
-    currentExercise.reps,
-  ]);
-
-  useEffect(() => {
-    if (
-      isCurrentExerciseBreak ||
-      (!isCurrentExerciseBreak && type === "time")
-    ) {
-      setState((prev) => ({
-        ...prev,
-        timeLeft: isCurrentExerciseBreak
-          ? currentExercise.reps
-          : (currentExercise as Exercise).reps,
-        isTimerRunning: true,
-      }));
-    } else {
-      setState((prev) => ({
-        ...prev,
-        isTimerRunning: false,
-      }));
-    }
-  }, [
-    currentExercise,
-    currentExercise.reps,
-    isCurrentExerciseBreak,
-    state.currentExerciseIndex,
-    type,
-  ]);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-
-    if (state.isTimerRunning && state.timeLeft > 0) {
-      interval = setInterval(() => {
-        setState((prev) => {
-          if (prev.timeLeft <= 1) {
-            handleNext();
-            return {
-              ...prev,
-              timeLeft: 0,
-              isTimerRunning: false,
-            };
-          }
-          return {
-            ...prev,
-            timeLeft: prev.timeLeft - 1,
-          };
-        });
-      }, 1000);
-    }
-
-    return () => clearInterval(interval);
-  }, [state.isTimerRunning, state.timeLeft, handleNext]);
-
-  const handlePrevious = () => {
-    if (currentSet > 1) {
-      setState((prev) => ({
-        ...prev,
-        currentSet: prev.currentSet - 1,
-        timeLeft: type === "time" ? currentExercise.reps : 0,
-        isTimerRunning: type === "time",
-      }));
-    } else {
-      const previousExercise =
-        exercises[Math.max(0, state.currentExerciseIndex - 1)];
-      setState((prev) => ({
-        ...prev,
-        currentExerciseIndex: Math.max(0, prev.currentExerciseIndex - 1),
-        currentSet: !isBreak(previousExercise) ? previousExercise.sets : 1,
-        timeLeft: isBreak(previousExercise)
-          ? previousExercise.reps
-          : (previousExercise as Exercise).type === "time"
-          ? (previousExercise as Exercise).reps
-          : 0,
-        isTimerRunning:
-          isBreak(previousExercise) ||
-          (previousExercise as Exercise).type === "time",
-      }));
-    }
+  const handleNext = () => {
+    if (!hasNextExercise) return;
+    setState({
+      ...state,
+      timeLeft: isTimeExercise(nextExercise) ? nextExercise.reps : 0,
+      exerciseIndex: state.exerciseIndex + 1,
+      isTimerRunning: false,
+    });
   };
 
-  const calculateProgress = () => {
-    let totalSteps = 0;
-    let completedSteps = 0;
-
-    exercises.forEach((exercise) => {
-      if (isBreak(exercise)) {
-        totalSteps += 1;
-      } else {
-        totalSteps += exercise.sets;
-      }
+  const handlePrevious = () => {
+    if (!hasPreviousExercise) return;
+    setState({
+      ...state,
+      timeLeft: isTimeExercise(previousExercise) ? previousExercise.reps : 0,
+      exerciseIndex: state.exerciseIndex - 1,
+      isTimerRunning: false,
     });
-
-    for (let i = 0; i < state.currentExerciseIndex; i++) {
-      const exercise = exercises[i];
-      if (isBreak(exercise)) {
-        completedSteps += 1;
-      } else {
-        completedSteps += exercise.sets;
-      }
-    }
-
-    if (isCurrentExerciseBreak) {
-    } else {
-      completedSteps += Math.max(0, state.currentSet - 1);
-    }
-
-    return (completedSteps / totalSteps) * 100;
   };
 
   const toggleTimer = () => {
+    setState({
+      ...state,
+      isTimerRunning: !state.isTimerRunning,
+    });
+  };
+
+  const handleClose = () => {
+    setState(createInitialState(firstExercise));
+    setIsRunning(false);
+  };
+
+  const handleRepeat = () => {
+    setState(createInitialState(firstExercise));
+  };
+
+  const handleAudioMute = () => {
     setState((prev) => ({
       ...prev,
-      isTimerRunning: !prev.isTimerRunning,
+      isAudioMuted: !prev.isAudioMuted,
     }));
   };
 
+  const calculateProgress = () => {
+    const totalExercises = exercises.length;
+    return (state.exerciseIndex / totalExercises) * 100;
+  };
+
+  useEffect(() => {
+    if (state.isTimerRunning && state.timeLeft > 0) {
+      const interval = setInterval(() => {
+        setState((prev) => ({
+          ...prev,
+          timeLeft: prev.timeLeft - 1,
+        }));
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [state.isTimerRunning, state.timeLeft]);
+
+  if (!currentExercise) {
+    return <div>No current exercise</div>;
+  }
+
   return (
-    <Dialog open={isRunning} onOpenChange={setIsRunning}>
+    <Dialog open={isRunning} onOpenChange={handleClose}>
       <DialogContent className="h-[calc(100%-2rem)] sm:max-w-[calc(100%-2rem)] flex flex-col">
         <DialogHeader>
           <DialogTitle>{workout.name}</DialogTitle>
@@ -229,14 +201,29 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
         </div>
         <Card className="flex-1 flex flex-col">
           <CardHeader className="text-center">
-            <CardTitle>{currentExercise.id}</CardTitle>
+            <div className="flex items-center justify-between">
+              <div className="flex gap-2">
+                <Button size="icon" onClick={handleAudioMute}>
+                  {state.isAudioMuted ? <VolumeX /> : <Volume2 />}
+                </Button>
+                <Button size="icon" onClick={handleRepeat} disabled={!canReset}>
+                  <RotateCcw />
+                </Button>
+              </div>
+              <CardTitle>{currentExercise.id}</CardTitle>
+              <div className="w-20" />
+            </div>
             <CardDescription>
-              Set {currentSet} of {totalSets}
+              <SetIndicator
+                id={currentExercise.id}
+                setNumber={currentExercise.setNumber}
+                totalSets={currentExercise.totalSets}
+              />
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="size-[400px] bg-red-100 mx-auto">grafika</div>
-            {type === "time" ? (
+            {currentExercise.type === "time" ? (
               <div className="text-4xl font-bold mt-4 text-center">
                 {state.timeLeft}s
               </div>
@@ -247,18 +234,43 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
             )}
           </CardContent>
           <CardFooter className="mt-auto flex gap-2 items-center justify-center">
-            <Button size="icon" variant="outline" onClick={handlePrevious}>
+            <Button
+              size="icon"
+              onClick={handlePrevious}
+              disabled={!hasPreviousExercise}
+            >
               <ArrowLeft />
             </Button>
-            <Button size="icon" variant="outline" onClick={toggleTimer}>
+            <Button size="icon" onClick={toggleTimer}>
               {state.isTimerRunning ? <Pause /> : <Play />}
             </Button>
-            <Button size="icon" variant="outline" onClick={handleNext}>
+            <Button
+              size="icon"
+              onClick={handleNext}
+              disabled={!hasNextExercise}
+            >
               <ArrowRight />
             </Button>
           </CardFooter>
         </Card>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function SetIndicator({
+  id,
+  setNumber,
+  totalSets,
+}: {
+  id: string;
+  setNumber: number;
+  totalSets: number;
+}) {
+  if (id === "break") return null;
+  return (
+    <div className="text-sm text-muted-foreground font-semibold">
+      Set {setNumber} of {totalSets}
+    </div>
   );
 }

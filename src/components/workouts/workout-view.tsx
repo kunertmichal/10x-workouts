@@ -22,6 +22,7 @@ export function WorkoutView({ workout }: Props) {
   const [isRunning, setIsRunning] = useState(false);
   const { confirm, ConfirmDialog } = useConfirmDialog();
   const exercises = workout.structure as Array<Exercise>;
+  const hasAnyExercises = exercises.length > 0;
 
   const onDelete = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -59,7 +60,7 @@ export function WorkoutView({ workout }: Props) {
                 <TabsTrigger value="edit">Edit</TabsTrigger>
               </TabsList>
             </Tabs>
-            <Button onClick={onRun}>
+            <Button onClick={onRun} disabled={!hasAnyExercises}>
               <Play className="h-4 w-4" />
               Run
             </Button>
