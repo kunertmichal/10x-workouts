@@ -26,18 +26,23 @@ import { exercises } from "@/lib/exercises";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { WorkoutFormValues, workoutSchema } from "@/app/app/creator/types";
 import { saveWorkout } from "@/app/app/creator/actions";
+import { updateWorkout } from "@/app/app/workouts/[id]/actions";
 
 const exerciseOptions = exercises.map((exercise) => ({
   value: exercise.id,
   label: exercise.name,
 }));
 
-export function CreatorForm() {
+type CreatorFormProps = {
+  workout?: Workout;
+};
+
+export function CreatorForm({ workout }: CreatorFormProps) {
   const form = useForm<WorkoutFormValues>({
     resolver: zodResolver(workoutSchema),
     defaultValues: {
-      name: "",
-      exercises: [],
+      name: workout?.name ?? "",
+      exercises: (workout?.structure as Array<Exercise>) ?? [],
     },
   });
   const { fields, append, remove, insert } = useFieldArray({
@@ -49,9 +54,15 @@ export function CreatorForm() {
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("exercises", JSON.stringify(data.exercises));
-    const result = await saveWorkout(formData);
+
+    const result = workout
+      ? await updateWorkout(workout.id, formData)
+      : await saveWorkout(formData);
+
     if (result.error) {
       toast.error(result.error);
+    } else {
+      toast.success(workout ? "Workout updated" : "Workout created");
     }
   };
 

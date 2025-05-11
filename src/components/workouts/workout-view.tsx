@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import { WorkoutRun } from "./workout-run";
+import { CreatorForm } from "@/components/creator/creator-form";
 
 type Props = {
   workout: Workout;
@@ -73,7 +74,18 @@ export function WorkoutView({ workout }: Props) {
           </div>
         </div>
       }
-      footer={tab === "edit" ? <div>Footer</div> : null}
+      footer={
+        tab === "edit" ? (
+          <div className="flex justify-end gap-4">
+            <Button variant="outline" type="reset" form="creator-form">
+              Reset
+            </Button>
+            <Button type="submit" form="creator-form">
+              Save
+            </Button>
+          </div>
+        ) : null
+      }
     >
       <Toaster />
       {ConfirmDialog}
@@ -87,12 +99,8 @@ export function WorkoutView({ workout }: Props) {
       {tab === "view" ? (
         <ExercisesList exercises={exercises} />
       ) : (
-        <EditWorkout />
+        <CreatorForm workout={workout} />
       )}
     </DefaultLayout>
   );
-}
-
-function EditWorkout() {
-  return <div>No exercises</div>;
 }
