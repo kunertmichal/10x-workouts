@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -108,12 +108,21 @@ const createInitialState = (exercise: ExerciseStructure) => {
   };
 };
 
+const createAudio = (soundFile: string) => {
+  const audio = new Audio();
+  audio.src = `/${soundFile}`;
+  audio.load();
+  return audio;
+};
+
 export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
   const exercises = transformExercises(
     workout.structure as Array<ExerciseStructure>
   );
   const firstExercise = exercises[0];
   const [state, setState] = useState(createInitialState(firstExercise));
+  const beepInitialRef = useRef<HTMLAudioElement | null>(null);
+  const beepLastRef = useRef<HTMLAudioElement | null>(null);
   const currentExercise = exercises[state.exerciseIndex];
   const hasNextExercise = state.exerciseIndex < exercises.length - 1;
   const hasPreviousExercise = state.exerciseIndex > 0;
@@ -121,6 +130,39 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
   const previousExercise = exercises[state.exerciseIndex - 1];
   const canReset =
     state.timeLeft !== (isTimeExercise(firstExercise) ? firstExercise.reps : 0);
+
+  useEffect(() => {
+    // Initialize audio elements
+    beepInitialRef.current = createAudio("beep-initial.mp3");
+    beepLastRef.current = createAudio("beep-last.mp3");
+
+    return () => {
+      // Cleanup audio elements
+      if (beepInitialRef.current) {
+        beepInitialRef.current.pause();
+        beepInitialRef.current = null;
+      }
+      if (beepLastRef.current) {
+        beepLastRef.current.pause();
+        beepLastRef.current = null;
+      }
+    };
+  }, []);
+
+  const playSound = useCallback(
+    (isLastBeep: boolean) => {
+      if (state.isAudioMuted) return;
+
+      const audio = isLastBeep ? beepLastRef.current : beepInitialRef.current;
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch((error) => {
+          console.error("Error playing sound:", error);
+        });
+      }
+    },
+    [state.isAudioMuted]
+  );
 
   const handleNext = () => {
     if (!hasNextExercise) return;
@@ -159,6 +201,17 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
   };
 
   const handleAudioMute = () => {
+    if (!state.isAudioMuted) {
+      // Stop any playing sounds when muting
+      if (beepInitialRef.current) {
+        beepInitialRef.current.pause();
+        beepInitialRef.current.currentTime = 0;
+      }
+      if (beepLastRef.current) {
+        beepLastRef.current.pause();
+        beepLastRef.current.currentTime = 0;
+      }
+    }
     setState((prev) => ({
       ...prev,
       isAudioMuted: !prev.isAudioMuted,
@@ -173,14 +226,26 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
   useEffect(() => {
     if (state.isTimerRunning && state.timeLeft > 0) {
       const interval = setInterval(() => {
-        setState((prev) => ({
-          ...prev,
-          timeLeft: prev.timeLeft - 1,
-        }));
+        setState((prev) => {
+          const newTimeLeft = prev.timeLeft - 1;
+
+          if (!prev.isAudioMuted) {
+            if (newTimeLeft === 0) {
+              playSound(true); // Play last beep
+            } else if (newTimeLeft <= 5) {
+              playSound(false); // Play initial beep only in last 5 seconds
+            }
+          }
+
+          return {
+            ...prev,
+            timeLeft: newTimeLeft,
+          };
+        });
       }, 1000);
       return () => clearInterval(interval);
     }
-  }, [state.isTimerRunning, state.timeLeft]);
+  }, [playSound, state.isTimerRunning, state.timeLeft]);
 
   if (!currentExercise) {
     return <div>No current exercise</div>;
@@ -240,7 +305,11 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
             >
               <ArrowLeft />
             </Button>
-            <Button size="icon" onClick={toggleTimer}>
+            <Button
+              size="icon"
+              onClick={toggleTimer}
+              disabled={!isTimeExercise(currentExercise)}
+            >
               {state.isTimerRunning ? <Pause /> : <Play />}
             </Button>
             <Button
