@@ -62,6 +62,7 @@ export function CreatorForm() {
         id="creator-form"
         className="space-y-4"
         onSubmit={form.handleSubmit(onSubmit)}
+        onReset={() => form.reset()}
       >
         <FormField
           control={form.control}
