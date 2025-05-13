@@ -3,7 +3,7 @@ import React from "react";
 
 interface DefaultLayoutProps {
   children: React.ReactNode;
-  header: React.ReactNode;
+  header?: React.ReactNode;
   footer?: React.ReactNode;
   className?: string;
   footerClassName?: string;

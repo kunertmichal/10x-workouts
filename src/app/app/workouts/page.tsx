@@ -12,12 +12,14 @@ export default async function WorkoutsPage() {
   return (
     <DefaultLayout
       header={
-        <div>
-          <h1 className="text-2xl font-bold">Workouts</h1>
-          <p className="text-sm text-muted-foreground">
-            View, edit, and delete your workouts.
-          </p>
-        </div>
+        workouts.data.length > 0 ? (
+          <div>
+            <h1 className="text-2xl font-bold">Workouts</h1>
+            <p className="text-sm text-muted-foreground">
+              View, edit, and delete your workouts.
+            </p>
+          </div>
+        ) : undefined
       }
     >
       <WorkoutsList workouts={workouts.data} />

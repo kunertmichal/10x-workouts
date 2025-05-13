@@ -8,12 +8,12 @@ import { workoutSchema } from "./types";
 export async function saveWorkout(formData: FormData) {
   const supabase = await createClient();
 
-  // check if user is authenticated
   const {
     data: { user },
+    error: userError,
   } = await supabase.auth.getUser();
 
-  if (!user) {
+  if (!user || userError) {
     return { error: "Unauthorized" };
   }
 
@@ -48,5 +48,31 @@ export async function saveWorkout(formData: FormData) {
 }
 
 export async function generateWorkout() {
-  // todo
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (!user || userError) {
+    return { error: "Unauthorized" };
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("user_id", user.id)
+    .single();
+
+  if (profileError) {
+    return { error: "Failed to fetch profile" };
+  }
+
+  const birthday = profile.birthday;
+  const weight = profile.weight;
+  const training_goals = profile.training_goals;
+  const equipment = profile.equipment;
+
+  return { birthday, weight, training_goals, equipment };
 }

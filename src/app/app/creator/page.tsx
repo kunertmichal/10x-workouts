@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { DefaultLayout } from "@/components/layouts/default-layout";
 import { CreatorForm } from "@/components/creator/creator-form";
+import { GenerateButton } from "@/components/creator/generate-button";
 
 export default function CreatorPage() {
   return (
@@ -13,9 +14,7 @@ export default function CreatorPage() {
               Build it yourself, or let the AI do it for you.
             </p>
           </div>
-          <Button variant="outline" size="sm">
-            Preview
-          </Button>
+          <GenerateButton />
         </div>
       }
       footer={
