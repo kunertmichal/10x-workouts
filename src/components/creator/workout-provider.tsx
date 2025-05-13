@@ -21,5 +21,5 @@ export function WorkoutProvider() {
     );
   }
 
-  return <CreatorForm workout={workout} />;
+  return <CreatorForm workout={workout} type="create" />;
 }

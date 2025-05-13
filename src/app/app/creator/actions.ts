@@ -35,12 +35,16 @@ export async function saveWorkout(formData: FormData) {
     };
   }
 
-  const { error } = await supabase.from("workouts").insert({
-    name: validatedFields.data.name,
-    owner: user.id,
-    source: "manual",
-    structure: validatedFields.data.exercises,
-  });
+  const { data, error } = await supabase
+    .from("workouts")
+    .insert({
+      name: validatedFields.data.name,
+      owner: user.id,
+      source: "manual",
+      structure: validatedFields.data.exercises,
+    })
+    .select()
+    .single();
 
   if (error) {
     console.error(error);
@@ -48,7 +52,7 @@ export async function saveWorkout(formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/app/workouts");
+  redirect(`/app/workouts/${data.id}`);
 }
 
 export async function generateWorkout(): Promise<Workout | { error: string }> {
@@ -129,7 +133,11 @@ function getPrompt({
   training_goals: string | null;
   equipment: string[] | null;
 }) {
-  console.log(birthday, weight, training_goals, equipment);
+  // TODO: generate prompt based on the user's profile
+  void birthday;
+  void weight;
+  void training_goals;
+  void equipment;
 
   const exerciseIds = exercises.map((exercise) => exercise.id);
   const prompt = `

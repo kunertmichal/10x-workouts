@@ -102,7 +102,7 @@ export function WorkoutView({ workout }: Props) {
           onEmptyStateButtonClick={() => setTab("edit")}
         />
       ) : (
-        <CreatorForm workout={workout} />
+        <CreatorForm workout={workout} type="edit" />
       )}
     </DefaultLayout>
   );

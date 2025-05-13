@@ -26,8 +26,6 @@ export async function getWorkout(id: string) {
     return { error: error.message };
   }
 
-  console.log(data);
-
   return { data, error: null };
 }
 

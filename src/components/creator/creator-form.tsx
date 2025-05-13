@@ -77,8 +77,9 @@ export function CreatorForm({ workout, type }: CreatorFormProps) {
 
       if (result.error) {
         toast.error(result.error);
-      } else {
-        toast.success(workout ? "Workout updated" : "Workout created");
+      }
+      if (workout && type === "edit") {
+        toast.success("Workout updated");
       }
     } finally {
       setFormSubmitting("creator-form", false);
