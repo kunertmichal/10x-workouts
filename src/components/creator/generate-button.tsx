@@ -18,6 +18,7 @@ export function GenerateButton() {
   const status = useGeneratedWorkoutStore((state) => state.status);
   const setWorkout = useGeneratedWorkoutStore((state) => state.setWorkout);
   const setStatus = useGeneratedWorkoutStore((state) => state.setStatus);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setStatus("loading");

@@ -1,7 +1,7 @@
 import { DefaultLayout } from "@/components/layouts/default-layout";
 import { ProfileForm } from "@/components/profile/profile-form";
 import { getProfile } from "./actions";
-import { Button } from "@/components/ui/button";
+import { ProfileFooter } from "@/components/profile/profile-footer";
 
 export default async function ProfilePage() {
   const profile = await getProfile();
@@ -20,16 +20,7 @@ export default async function ProfilePage() {
           </p>
         </div>
       }
-      footer={
-        <div className="flex justify-end gap-4">
-          <Button variant="outline" type="reset" form="profile-form">
-            Reset
-          </Button>
-          <Button type="submit" form="profile-form">
-            Save
-          </Button>
-        </div>
-      }
+      footer={<ProfileFooter />}
     >
       <ProfileForm profile={profile.data} />
     </DefaultLayout>

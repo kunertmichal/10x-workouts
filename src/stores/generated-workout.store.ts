@@ -9,7 +9,7 @@ type GeneratedWorkoutStore = {
 
 export const useGeneratedWorkoutStore = create<GeneratedWorkoutStore>(
   (set) => ({
-    status: "loading",
+    status: "idle",
     workout: undefined,
     setWorkout: (workout: Workout) => set({ workout }),
     setStatus: (status: "idle" | "loading" | "success" | "error") =>

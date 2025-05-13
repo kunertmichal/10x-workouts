@@ -28,6 +28,7 @@ import { WorkoutFormValues, workoutSchema } from "@/app/app/creator/types";
 import { saveWorkout } from "@/app/app/creator/actions";
 import { updateWorkout } from "@/app/app/workouts/[id]/actions";
 import { useEffect } from "react";
+import { useFormStore } from "@/stores/form.store";
 
 const exerciseOptions = exercises.map((exercise) => ({
   value: exercise.id,
@@ -50,6 +51,7 @@ export function CreatorForm({ workout }: CreatorFormProps) {
     control: form.control,
     name: "exercises",
   });
+  const setFormSubmitting = useFormStore((state) => state.setFormSubmitting);
 
   useEffect(() => {
     if (workout) {
@@ -61,18 +63,23 @@ export function CreatorForm({ workout }: CreatorFormProps) {
   }, [workout, form]);
 
   const onSubmit = async (data: WorkoutFormValues) => {
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("exercises", JSON.stringify(data.exercises));
+    setFormSubmitting("creator-form", true);
+    try {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("exercises", JSON.stringify(data.exercises));
 
-    const result = workout
-      ? await updateWorkout(workout.id, formData)
-      : await saveWorkout(formData);
+      const result = workout
+        ? await updateWorkout(workout.id, formData)
+        : await saveWorkout(formData);
 
-    if (result.error) {
-      toast.error(result.error);
-    } else {
-      toast.success(workout ? "Workout updated" : "Workout created");
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        toast.success(workout ? "Workout updated" : "Workout created");
+      }
+    } finally {
+      setFormSubmitting("creator-form", false);
     }
   };
 

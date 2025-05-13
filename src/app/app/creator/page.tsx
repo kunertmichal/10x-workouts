@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { DefaultLayout } from "@/components/layouts/default-layout";
 import { WorkoutProvider } from "@/components/creator/workout-provider";
 import { GenerateButton } from "@/components/creator/generate-button";
+import { CreatorFooter } from "@/components/creator/creator-footer";
 
 export default function CreatorPage() {
   return (
@@ -17,16 +17,7 @@ export default function CreatorPage() {
           <GenerateButton />
         </div>
       }
-      footer={
-        <div className="flex justify-end gap-4">
-          <Button variant="outline" type="reset" form="creator-form">
-            Reset
-          </Button>
-          <Button type="submit" form="creator-form">
-            Save
-          </Button>
-        </div>
-      }
+      footer={<CreatorFooter />}
     >
       <section>
         <WorkoutProvider />

@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { profileSchema, ProfileValues } from "@/app/app/profile/types";
 import { updateProfile } from "@/app/app/profile/actions";
 import { Toaster } from "../ui/sonner";
+import { useFormStore } from "@/stores/form.store";
 
 type Props = {
   profile: Profile;
@@ -31,18 +32,24 @@ export function ProfileForm({ profile }: Props) {
     resolver: zodResolver(profileSchema),
     defaultValues: profile,
   });
+  const setFormSubmitting = useFormStore((state) => state.setFormSubmitting);
 
   const onSubmit = async (data: ProfileValues) => {
-    const formData = new FormData();
-    formData.append("weight", data.weight?.toString() ?? "");
-    formData.append("birthday", data.birthday ?? "");
-    formData.append("equipment", data.equipment?.join(",") ?? "");
-    formData.append("training_goals", data.training_goals ?? "");
-    const result = await updateProfile(formData);
-    if (result.error) {
-      toast.error(result.error);
-    } else {
-      toast.success("Profile updated successfully");
+    setFormSubmitting("profile-form", true);
+    try {
+      const formData = new FormData();
+      formData.append("weight", data.weight?.toString() ?? "");
+      formData.append("birthday", data.birthday ?? "");
+      formData.append("equipment", data.equipment?.join(",") ?? "");
+      formData.append("training_goals", data.training_goals ?? "");
+      const result = await updateProfile(formData);
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        toast.success("Profile updated successfully");
+      }
+    } finally {
+      setFormSubmitting("profile-form", false);
     }
   };
 
