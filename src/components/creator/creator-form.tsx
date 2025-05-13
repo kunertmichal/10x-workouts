@@ -37,9 +37,10 @@ const exerciseOptions = exercises.map((exercise) => ({
 
 type CreatorFormProps = {
   workout?: Workout;
+  type: "create" | "edit";
 };
 
-export function CreatorForm({ workout }: CreatorFormProps) {
+export function CreatorForm({ workout, type }: CreatorFormProps) {
   const form = useForm<WorkoutFormValues>({
     resolver: zodResolver(workoutSchema),
     defaultValues: {
@@ -69,9 +70,10 @@ export function CreatorForm({ workout }: CreatorFormProps) {
       formData.append("name", data.name);
       formData.append("exercises", JSON.stringify(data.exercises));
 
-      const result = workout
-        ? await updateWorkout(workout.id, formData)
-        : await saveWorkout(formData);
+      const result =
+        workout && type === "edit"
+          ? await updateWorkout(workout.id, formData)
+          : await saveWorkout(formData);
 
       if (result.error) {
         toast.error(result.error);

@@ -43,6 +43,7 @@ export async function saveWorkout(formData: FormData) {
   });
 
   if (error) {
+    console.error(error);
     return { error: "Failed to save workout" };
   }
 
