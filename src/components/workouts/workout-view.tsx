@@ -53,7 +53,7 @@ export function WorkoutView({ workout }: Props) {
           <h1 className="text-2xl font-bold">{workout.name}</h1>
           <div className="flex gap-2">
             <Tabs
-              defaultValue={tab}
+              value={tab}
               onValueChange={(value) => setTab(value as "view" | "edit")}
             >
               <TabsList className="grid w-full grid-cols-2">
@@ -97,7 +97,10 @@ export function WorkoutView({ workout }: Props) {
         />
       )}
       {tab === "view" ? (
-        <ExercisesList exercises={exercises} />
+        <ExercisesList
+          exercises={exercises}
+          onEmptyStateButtonClick={() => setTab("edit")}
+        />
       ) : (
         <CreatorForm workout={workout} />
       )}

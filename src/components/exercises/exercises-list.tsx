@@ -1,5 +1,7 @@
+import { Dumbbell } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
+import { EmptyState } from "@/components/shared/empty-state";
 
 const columns: ColumnDef<Exercise>[] = [
   {
@@ -41,9 +43,22 @@ const columns: ColumnDef<Exercise>[] = [
   },
 ];
 
-export function ExercisesList({ exercises }: { exercises: Exercise[] }) {
+type Props = {
+  exercises: Exercise[];
+  onEmptyStateButtonClick: () => void;
+};
+
+export function ExercisesList({ exercises, onEmptyStateButtonClick }: Props) {
   if (exercises.length === 0) {
-    return <div>Empty state</div>;
+    return (
+      <EmptyState
+        icon={<Dumbbell />}
+        title="No exercises yet"
+        description="Go to Edit mode to add exercises to your workout"
+        buttonText="Add exercise"
+        onButtonClick={onEmptyStateButtonClick}
+      />
+    );
   }
 
   return <DataTable data={exercises} columns={columns} />;
