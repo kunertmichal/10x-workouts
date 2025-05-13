@@ -3,7 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { workoutSchema } from "./types";
+import { workoutSchema, aiGeneratedWorkoutSchema } from "./types";
 import { openrouter } from "@/utils/supabase/axios";
 import { exercises } from "@/lib/exercises";
 import { openrouterJsonSchema } from "@/lib/openrouter-json-schema";
@@ -94,14 +94,22 @@ export async function generateWorkout(): Promise<Workout | { error: string }> {
       },
     });
     const workoutParsed = JSON.parse(response.data.choices[0].message.content);
+
+    const validatedWorkout = aiGeneratedWorkoutSchema.safeParse(workoutParsed);
+
+    if (!validatedWorkout.success) {
+      console.error("AI generated invalid workout:", validatedWorkout.error);
+      return { error: "AI generated an invalid workout structure" };
+    }
+
     return {
       id: "ai-generated",
       owner: user.id,
-      name: workoutParsed.workoutName,
+      name: validatedWorkout.data.workoutName,
       source: "ai",
       updated_at: new Date().toISOString(),
       created_at: new Date().toISOString(),
-      structure: workoutParsed.exercises,
+      structure: validatedWorkout.data.exercises,
     };
   } catch (e) {
     console.error(e);
