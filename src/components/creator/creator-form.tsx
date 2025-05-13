@@ -27,6 +27,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { WorkoutFormValues, workoutSchema } from "@/app/app/creator/types";
 import { saveWorkout } from "@/app/app/creator/actions";
 import { updateWorkout } from "@/app/app/workouts/[id]/actions";
+import { useEffect } from "react";
 
 const exerciseOptions = exercises.map((exercise) => ({
   value: exercise.id,
@@ -42,13 +43,22 @@ export function CreatorForm({ workout }: CreatorFormProps) {
     resolver: zodResolver(workoutSchema),
     defaultValues: {
       name: workout?.name ?? "",
-      exercises: (workout?.structure as Array<Exercise>) ?? [],
+      exercises: workout?.structure as Array<Exercise>,
     },
   });
   const { fields, append, remove, insert } = useFieldArray({
     control: form.control,
     name: "exercises",
   });
+
+  useEffect(() => {
+    if (workout) {
+      form.reset({
+        name: workout.name,
+        exercises: workout.structure as Array<Exercise>,
+      });
+    }
+  }, [workout, form]);
 
   const onSubmit = async (data: WorkoutFormValues) => {
     const formData = new FormData();

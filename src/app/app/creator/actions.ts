@@ -50,7 +50,7 @@ export async function saveWorkout(formData: FormData) {
   redirect("/app/workouts");
 }
 
-export async function generateWorkout() {
+export async function generateWorkout(): Promise<Workout | { error: string }> {
   const supabase = await createClient();
 
   const {
@@ -93,8 +93,18 @@ export async function generateWorkout() {
         json_schema: openrouterJsonSchema,
       },
     });
-    return response.data.choices[0].message.content;
-  } catch {
+    const workoutParsed = JSON.parse(response.data.choices[0].message.content);
+    return {
+      id: "ai-generated",
+      owner: user.id,
+      name: workoutParsed.workoutName,
+      source: "ai",
+      updated_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      structure: workoutParsed.exercises,
+    };
+  } catch (e) {
+    console.error(e);
     return { error: "Failed to generate workout" };
   }
 }

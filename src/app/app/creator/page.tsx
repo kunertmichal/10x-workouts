@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { DefaultLayout } from "@/components/layouts/default-layout";
-import { CreatorForm } from "@/components/creator/creator-form";
+import { WorkoutProvider } from "@/components/creator/workout-provider";
 import { GenerateButton } from "@/components/creator/generate-button";
 
 export default function CreatorPage() {
@@ -29,7 +29,7 @@ export default function CreatorPage() {
       }
     >
       <section>
-        <CreatorForm />
+        <WorkoutProvider />
       </section>
     </DefaultLayout>
   );

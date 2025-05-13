@@ -1,38 +1,57 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 import { Zap } from "lucide-react";
+import { toast } from "sonner";
 import { generateWorkout } from "@/app/app/creator/actions";
 import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
+import { useGeneratedWorkoutStore } from "@/stores/generated-workout.store";
+
+function hasError(
+  result: Workout | { error: string }
+): result is { error: string } {
+  return "error" in result;
+}
 
 export function GenerateButton() {
-  const [state, setState] = useState<"idle" | "loading" | "success" | "error">(
-    "idle"
-  );
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const status = useGeneratedWorkoutStore((state) => state.status);
+  const setWorkout = useGeneratedWorkoutStore((state) => state.setWorkout);
+  const setStatus = useGeneratedWorkoutStore((state) => state.setStatus);
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setState("loading");
-    await handleRequest();
+    setStatus("loading");
+    void handleRequest();
   };
 
   const handleRequest = async () => {
-    try {
-      setState("loading");
-      const result = await generateWorkout();
-      console.log(result);
-      setState("success");
-    } catch (error) {
-      console.error(error);
-      setState("error");
+    setStatus("loading");
+    const result = await generateWorkout();
+    if (hasError(result)) {
+      setStatus("error");
+    } else {
+      setWorkout(result);
+      setStatus("success");
     }
   };
 
+  useEffect(() => {
+    if (status === "success") {
+      toast.success("Workout generated successfully");
+    } else if (status === "error") {
+      toast.error("Failed to generate workout");
+    }
+  }, [status]);
+
   return (
-    <form onSubmit={handleSubmit}>
-      <Button variant="ai" type="submit" disabled={state === "loading"}>
-        <Zap />
-        Generate
-      </Button>
-    </form>
+    <div>
+      <Toaster />
+      <form onSubmit={handleSubmit}>
+        <Button variant="ai" type="submit" disabled={status === "loading"}>
+          <Zap />
+          Generate
+        </Button>
+      </form>
+    </div>
   );
 }
