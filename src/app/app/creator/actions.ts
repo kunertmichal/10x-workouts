@@ -4,6 +4,9 @@ import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { workoutSchema } from "./types";
+import { openrouter } from "@/utils/supabase/axios";
+import { exercises } from "@/lib/exercises";
+import { openrouterJsonSchema } from "@/lib/openrouter-json-schema";
 
 export async function saveWorkout(formData: FormData) {
   const supabase = await createClient();
@@ -74,5 +77,60 @@ export async function generateWorkout() {
   const training_goals = profile.training_goals;
   const equipment = profile.equipment;
 
-  return { birthday, weight, training_goals, equipment };
+  const prompt = getPrompt({
+    birthday,
+    weight,
+    training_goals,
+    equipment,
+  });
+
+  try {
+    const response = await openrouter.post("/chat/completions", {
+      model: "openai/gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+      response_format: {
+        type: "json_schema",
+        json_schema: openrouterJsonSchema,
+      },
+    });
+    return response.data.choices[0].message.content;
+  } catch {
+    return { error: "Failed to generate workout" };
+  }
+}
+
+function getPrompt({
+  birthday,
+  weight,
+  training_goals,
+  equipment,
+}: {
+  birthday: string | null;
+  weight: number | null;
+  training_goals: string | null;
+  equipment: string[] | null;
+}) {
+  console.log(birthday, weight, training_goals, equipment);
+
+  const exerciseIds = exercises.map((exercise) => exercise.id);
+  const prompt = `
+    You are a fitness trainer tasked with creating personalized workout routines. Your goal is to generate a workout based on a list of available exercises.
+
+    Here is the list of available exercises:
+
+    <available_exercises>
+    ${JSON.stringify(exerciseIds.join(", "))}
+    </available_exercises>
+
+    Please create a workout routine using the following guidelines:
+
+    1. Select exercises from the available list above.
+    2. Exercise types can be either 'time' (measured in seconds) or 'reps' (number of repetitions).
+    3. To create a break between exercises, use the id "break".
+    4. Ensure a good mix of exercises and breaks in the workout.
+    5. Choose a suitable name for the workout based on the exercises you plan to include.
+    6. Determine appropriate durations for time-based exercises and repetitions for rep-based exercises.
+    8. Plan where to insert breaks and their durations.
+    `;
+  return prompt;
 }
