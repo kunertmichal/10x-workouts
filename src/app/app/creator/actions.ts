@@ -139,11 +139,47 @@ function getPrompt({
   void training_goals;
   void equipment;
 
-  const exerciseIds = exercises.map((exercise) => exercise.id);
+  const userAge = () => {
+    if (!birthday) return "Not provided";
+    const today = new Date();
+    const birthDate = new Date(birthday);
+    return today.getFullYear() - birthDate.getFullYear();
+  };
+
+  const userWeight = () => {
+    if (!weight) return "Not provided";
+    return weight;
+  };
+
+  const userTrainingGoals = () => {
+    if (!training_goals) return "Not provided";
+    return training_goals;
+  };
+
+  const filteredExercisesByEquipment = exercises.filter((exercise) => {
+    if (exercise.id === "break") return true;
+    if (exercise.equipment?.length === 0) return true;
+    return exercise.equipment?.some((e) => equipment?.includes(e)) ?? false;
+  });
+  const exerciseIds = filteredExercisesByEquipment.map(
+    (exercise) => exercise.id
+  );
   const prompt = `
     You are a fitness trainer tasked with creating personalized workout routines. Your goal is to generate a workout based on a list of available exercises.
 
     Here is the list of available exercises:
+
+    <user_age>
+    ${userAge()}
+    </user_age>
+
+    <user_weight>
+    ${userWeight()}
+    </user_weight>
+
+    <user_training_goals>
+    ${userTrainingGoals()}
+    </user_training_goals>
 
     <available_exercises>
     ${JSON.stringify(exerciseIds.join(", "))}
