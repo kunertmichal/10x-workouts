@@ -25,6 +25,13 @@ import {
 } from "@/components/ui/card";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { getExerciseName } from "@/lib/exercises";
+
+const getExerciseVideo = (id: string) => {
+  // Skip video for break
+  if (id === "break") return "";
+  return `/exercises/${id}.mp4`;
+};
 
 type Props = {
   workout: Workout;
@@ -274,7 +281,7 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
                   <RotateCcw />
                 </Button>
               </div>
-              <CardTitle>{currentExercise.id}</CardTitle>
+              <CardTitle>{getExerciseName(currentExercise.id)}</CardTitle>
               <div className="w-20" />
             </div>
             <CardDescription>
@@ -286,7 +293,15 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="size-[400px] bg-red-100 mx-auto">grafika</div>
+            <div className="mx-auto">
+              {getExerciseVideo(currentExercise.id) && (
+                <video
+                  autoPlay={true}
+                  loop={true}
+                  src={getExerciseVideo(currentExercise.id)}
+                />
+              )}
+            </div>
             {currentExercise.type === "time" ? (
               <div className="text-4xl font-bold mt-4 text-center">
                 {state.timeLeft}s

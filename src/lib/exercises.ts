@@ -14,9 +14,9 @@ export const exercises: Exercise[] = [
   },
   // Calves
   {
-    id: "standing-calf-raise",
-    name: "Standing calf raise",
-    description: "Standing calf raise",
+    id: "calf-raise",
+    name: "Calf raise",
+    description: "Calf raise",
     muscleGroups: ["calves"],
     equipment: ["bodyweight", "kettlebell"],
   },
@@ -28,9 +28,9 @@ export const exercises: Exercise[] = [
     equipment: ["kettlebell", "band", "dumbbell"],
   },
   {
-    id: "jumping-rope",
-    name: "Jumping rope",
-    description: "Jumping rope",
+    id: "jump-rope",
+    name: "Jump rope",
+    description: "Jump rope",
     muscleGroups: ["calves", "glutes", "quadriceps"],
     equipment: ["bodyweight", "rope"],
   },
@@ -64,18 +64,24 @@ export const exercises: Exercise[] = [
     equipment: ["bodyweight", "kettlebell", "dumbbell"],
   },
   {
-    id: "squat-jump",
-    name: "Squat jump",
-    description: "Squat jump",
+    id: "jump-squat",
+    name: "Jump squat",
+    description: "Jump squat",
     muscleGroups: ["quadriceps", "hamstrings"],
     equipment: ["bodyweight", "kettlebell", "dumbbell"],
   },
   {
-    id: "sissy-squat",
-    name: "Sissy squat",
-    description: "Sissy squat",
+    id: "kneeling-sissy-squat",
+    name: "Kneeling sissy squat",
+    description: "Kneeling sissy squat",
     muscleGroups: ["quadriceps"],
-    equipment: ["bodyweight", "kettlebell", "dumbbell"],
+    equipment: ["bodyweight"],
+  },
+  {
+    id: "leg-extension",
+    name: "Leg extension",
+    description: "Leg extension",
+    muscleGroups: ["quadriceps"],
   },
   // Glutes
   {
@@ -98,6 +104,20 @@ export const exercises: Exercise[] = [
     description: "Single-leg glute bridge",
     muscleGroups: ["glutes"],
     equipment: ["bodyweight", "kettlebell", "dumbbell"],
+  },
+  {
+    id: "hip-thrust",
+    name: "Hip thrust",
+    description: "Hip thrust",
+    muscleGroups: ["glutes"],
+    equipment: ["bodyweight", "kettlebell", "dumbbell"],
+  },
+  {
+    id: "side-plank-glute-raise",
+    name: "Side plank glute raise",
+    description: "Side plank glute raise",
+    muscleGroups: ["glutes", "abductors"],
+    equipment: ["bodyweight"],
   },
   // Core
   {
@@ -132,4 +152,9 @@ export const exercises: Exercise[] = [
 
 export function getExerciseById(id: string) {
   return exercises.find((exercise) => exercise.id === id);
+}
+
+export function getExerciseName(id: string) {
+  const exercise = getExerciseById(id);
+  return exercise ? exercise.name : id;
 }
