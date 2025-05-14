@@ -37,7 +37,7 @@ export const exercises: Exercise[] = [
   // Quadriceps
   {
     id: "bulgarian-split-squat",
-    name: "Bulgarian Split Squat",
+    name: "Bulgarian split squat",
     description: "Single-leg squat with rear foot elevated",
     muscleGroups: ["quadriceps", "glutes", "hamstrings"],
     equipment: ["dumbbell", "kettlebell"],
