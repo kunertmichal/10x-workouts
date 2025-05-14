@@ -30,7 +30,7 @@ export async function saveWorkout(formData: FormData) {
   if (!validatedFields.success) {
     return {
       error: `Invalid form data: ${JSON.stringify(
-        validatedFields.error.errors
+        validatedFields.error.flatten().fieldErrors
       )}`,
     };
   }

@@ -142,6 +142,14 @@ export const exercises: Exercise[] = [
     muscleGroups: ["core"],
     equipment: [],
   },
+  // Chest
+  {
+    id: "push-up",
+    name: "Push up",
+    description: "Push up",
+    muscleGroups: ["chest"],
+    equipment: [],
+  },
 ];
 
 export function getExerciseById(id: string) {

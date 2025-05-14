@@ -125,7 +125,7 @@ export function CreatorForm({ workout, type }: CreatorFormProps) {
                       id: "",
                       type: "reps",
                       reps: 0,
-                      sets: 0,
+                      sets: 1,
                       breakBetweenSets: 0,
                     })
                   }
@@ -274,7 +274,7 @@ export function CreatorForm({ workout, type }: CreatorFormProps) {
                 id: "",
                 type: "reps",
                 reps: 0,
-                sets: 0,
+                sets: 1,
                 breakBetweenSets: 0,
               })
             }
@@ -291,9 +291,9 @@ export function CreatorForm({ workout, type }: CreatorFormProps) {
                 append({
                   id: "",
                   type: "reps",
-                  reps: 1,
+                  reps: 0,
                   sets: 1,
-                  breakBetweenSets: 1,
+                  breakBetweenSets: 0,
                 })
               }
             >
