@@ -27,12 +27,6 @@ import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { getExerciseName } from "@/lib/exercises";
 
-const getExerciseVideo = (id: string) => {
-  // Skip video for break
-  if (id === "break") return "";
-  return `/exercises/${id}.mp4`;
-};
-
 type Props = {
   workout: Workout;
   isRunning: boolean;
@@ -281,7 +275,9 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
                   <RotateCcw />
                 </Button>
               </div>
-              <CardTitle>{getExerciseName(currentExercise.id)}</CardTitle>
+              <CardTitle className="text-4xl">
+                {getExerciseName(currentExercise.id)}
+              </CardTitle>
               <div className="w-20" />
             </div>
             <CardDescription>
@@ -293,15 +289,6 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="mx-auto">
-              {getExerciseVideo(currentExercise.id) && (
-                <video
-                  autoPlay={true}
-                  loop={true}
-                  src={getExerciseVideo(currentExercise.id)}
-                />
-              )}
-            </div>
             {currentExercise.type === "time" ? (
               <div className="text-4xl font-bold mt-4 text-center">
                 {state.timeLeft}s
@@ -353,7 +340,7 @@ function SetIndicator({
   return (
     <div
       className={cn(
-        "text-sm font-semibold",
+        "text-lg font-semibold",
         id === "break" ? "text-white" : "text-muted-foreground"
       )}
     >
