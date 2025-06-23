@@ -20,6 +20,41 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Testing
+
+This project uses a comprehensive testing setup to ensure code quality and reliability:
+
+### Unit and Integration Tests
+
+- **Vitest** - Fast unit test runner with TypeScript support
+- **React Testing Library** - Simple and complete testing utilities for React components
+
+### End-to-End Tests
+
+- **Playwright** - Modern end-to-end testing framework for web apps
+
+### Mocking and Test Data
+
+- **MSW (Mock Service Worker)** - API mocking library for browser and Node.js
+- **@faker-js/faker** - Generate massive amounts of fake data in the browser and Node.js
+
+### CI/CD
+
+- **GitHub Actions** - Automated testing pipeline for continuous integration
+
+Run tests with:
+
+```bash
+# Unit and integration tests
+npm run test
+
+# End-to-end tests
+npm run test:e2e
+
+# Test coverage
+npm run test:coverage
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
