@@ -35,10 +35,10 @@ export default defineConfig({
     trace: "on-first-retry",
 
     // Take screenshot on failure
-    screenshot: "only-on-failure",
+    screenshot: "off",
 
     // Record video on failure
-    video: "retain-on-failure",
+    video: "off",
 
     // Browser context options
     ignoreHTTPSErrors: true,
@@ -73,7 +73,7 @@ export default defineConfig({
   },
 
   // Output directories
-  outputDir: "test-results/",
+  outputDir: "test-result",
 
   // Test timeout
   timeout: 30 * 1000,
