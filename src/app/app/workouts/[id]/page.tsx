@@ -2,9 +2,9 @@ import { WorkoutView } from "@/components/workouts/workout-view";
 import { getWorkout } from "./actions";
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export default async function WorkoutDetailsPage({ params }: Props) {
