@@ -26,6 +26,7 @@ import {
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { getExerciseName } from "@/lib/exercises";
+import { CircularProgress } from "../ui/circular-progress";
 
 type Props = {
   workout: Workout;
@@ -224,6 +225,15 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
     return (state.exerciseIndex / totalExercises) * 100;
   };
 
+  const calculateCircularProgress = () => {
+    const totalTime = currentExercise.reps;
+    const remainingTime = state.timeLeft;
+    const completedTime = totalTime - remainingTime;
+
+    // Calculate percentage of completed time (0-100)
+    return Math.max(0, Math.min(100, (completedTime / totalTime) * 100));
+  };
+
   useEffect(() => {
     if (state.isTimerRunning && state.timeLeft > 0) {
       const interval = setInterval(() => {
@@ -296,6 +306,15 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
             ) : (
               <div className="text-center text-4xl font-bold mt-4">
                 {currentExercise.reps} reps
+              </div>
+            )}
+            {isTimeExercise(currentExercise) && (
+              <div className="flex justify-center">
+                <CircularProgress
+                  value={calculateCircularProgress()}
+                  size={200}
+                  className="w-full h-full"
+                />
               </div>
             )}
           </CardContent>
