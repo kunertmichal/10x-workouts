@@ -52,6 +52,14 @@ export default async function Layout({
                 <Link href="/app/profile">Profile</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
+                <Link href="/app/logs">Logs</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
             <NavigationMenuItem className="ml-auto">
               <form action="/auth/signout" method="post">
                 <button className={navigationMenuTriggerStyle()} type="submit">
