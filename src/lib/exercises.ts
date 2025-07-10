@@ -12,48 +12,103 @@ export const exercises: Exercise[] = [
     name: "Break",
     description: "Break between sets or exercises",
   },
-  // Calves
+  {
+    id: "jump-rope",
+    name: "Jump rope",
+    description: "Jump rope",
+  },
+  {
+    id: "glute-bridge",
+    name: "Glute bridge",
+    description: "Glute bridge",
+  },
+  {
+    id: "single-leg-glute-bridge",
+    name: "Single-leg glute bridge",
+    description: "Single-leg glute bridge",
+  },
+  {
+    id: "bulgarian-split-squat",
+    name: "Bulgarian split squat",
+    description: "Single-leg squat with rear foot elevated",
+  },
+  {
+    id: "copenhagen-adductor",
+    name: "Copenhagen adductor",
+    description: "Copenhagen adductor",
+  },
   {
     id: "calf-raise",
     name: "Calf raise",
     description: "Calf raise",
-    muscleGroups: ["calves"],
-    equipment: ["kettlebell", "dumbbell"],
+  },
+  {
+    id: "single-leg-calf-raise",
+    name: "Single-leg calf raise",
+    description: "Single-leg calf raise",
   },
   {
     id: "seated-calf-raise",
     name: "Seated calf raise",
     description: "Seated calf raise",
-    muscleGroups: ["calves"],
-    equipment: ["kettlebell", "band", "dumbbell"],
   },
   {
-    id: "jump-rope",
-    name: "Jump rope",
-    description: "Jump rope",
-    muscleGroups: ["calves", "glutes", "quadriceps"],
+    id: "nordic-hamstring-curl",
+    name: "Nordic hamstring curl",
+    description: "Nordic hamstring curl",
+  },
+  {
+    id: "single-leg-deadlift",
+    name: "Single-leg deadlift",
+    description: "Single-leg deadlift",
+  },
+  {
+    id: "toe-raise",
+    name: "Toe raise",
+    description: "Toe raise",
+  },
+  {
+    id: "push-up",
+    name: "Push up",
+    description: "Push up",
+  },
+  {
+    id: "pike-push-up",
+    name: "Pike push up",
+    description: "Pike push up",
+  },
+  {
+    id: "push-up-to-plank",
+    name: "Push up to plank",
+    description: "Push up to plank",
+  },
+  {
+    id: "bodyweight-row",
+    name: "Bodyweight row",
+    description: "Bodyweight row",
+  },
+  {
+    id: "superman",
+    name: "Superman",
+    description: "Superman",
+  },
+  {
+    id: "plank",
+    name: "Plank",
+    description: "Plank",
+    muscleGroups: ["core"],
     equipment: [],
   },
-  // Quadriceps
   {
-    id: "bulgarian-split-squat",
-    name: "Bulgarian split squat",
-    description: "Single-leg squat with rear foot elevated",
-    muscleGroups: ["quadriceps", "glutes", "hamstrings"],
-    equipment: ["dumbbell", "kettlebell"],
+    id: "side-plank",
+    name: "Side plank",
+    description: "Side plank",
   },
   {
     id: "scissor-jump",
     name: "Scissor jump",
     description: "Scissor jump",
     muscleGroups: ["calves", "glutes", "quadriceps"],
-    equipment: ["kettlebell", "dumbbell"],
-  },
-  {
-    id: "lunge",
-    name: "Lunge",
-    description: "Lunge",
-    muscleGroups: ["quadriceps", "hamstrings"],
     equipment: ["kettlebell", "dumbbell"],
   },
   {
@@ -77,79 +132,7 @@ export const exercises: Exercise[] = [
     muscleGroups: ["quadriceps"],
     equipment: ["kettlebell", "dumbbell"],
   },
-  // Glutes
-  {
-    id: "single-leg-deadlift",
-    name: "Single-leg deadlift",
-    description: "Single-leg deadlift",
-    muscleGroups: ["hamstrings", "glutes"],
-    equipment: ["kettlebell", "dumbbell"],
-  },
-  {
-    id: "glute-bridge",
-    name: "Glute bridge",
-    description: "Glute bridge",
-    muscleGroups: ["glutes"],
-    equipment: ["kettlebell", "dumbbell"],
-  },
-  {
-    id: "single-leg-glute-bridge",
-    name: "Single-leg glute bridge",
-    description: "Single-leg glute bridge",
-    muscleGroups: ["glutes"],
-    equipment: ["kettlebell", "dumbbell"],
-  },
-  {
-    id: "hip-thrust",
-    name: "Hip thrust",
-    description: "Hip thrust",
-    muscleGroups: ["glutes"],
-    equipment: ["kettlebell", "dumbbell"],
-  },
-  {
-    id: "side-plank-glute-raise",
-    name: "Side plank glute raise",
-    description: "Side plank glute raise",
-    muscleGroups: ["glutes", "abductors"],
-    equipment: ["band"],
-  },
-  // Core
-  {
-    id: "plank",
-    name: "Plank",
-    description: "Plank",
-    muscleGroups: ["core"],
-    equipment: [],
-  },
-  {
-    id: "side-plank",
-    name: "Side plank",
-    description: "Side plank",
-    muscleGroups: ["core"],
-    equipment: [],
-  },
-  {
-    id: "russian-twist",
-    name: "Russian twist",
-    description: "Russian twist",
-    muscleGroups: ["core"],
-    equipment: ["dumbbell", "kettlebell"],
-  },
-  {
-    id: "mountain-climbers",
-    name: "Mountain climbers",
-    description: "Mountain climbers",
-    muscleGroups: ["core"],
-    equipment: [],
-  },
   // Chest
-  {
-    id: "push-up",
-    name: "Push up",
-    description: "Push up",
-    muscleGroups: ["chest"],
-    equipment: [],
-  },
 ];
 
 export function getExerciseById(id: string) {
