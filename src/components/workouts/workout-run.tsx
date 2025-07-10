@@ -7,6 +7,7 @@ import {
   RotateCcw,
   Volume2,
   VolumeX,
+  CheckCircle,
 } from "lucide-react";
 import {
   Dialog,
@@ -50,6 +51,14 @@ type Exercise = {
 };
 
 type ExerciseStructure = Break | Exercise;
+
+type WorkoutState = {
+  isAudioMuted: boolean;
+  exerciseIndex: number;
+  isTimerRunning: boolean;
+  timeLeft: number;
+  isCompleted: boolean;
+};
 
 const isBreak = (exercise: ExerciseStructure): exercise is Break => {
   return exercise.id === "break";
@@ -107,6 +116,7 @@ const createInitialState = (exercise: ExerciseStructure) => {
     exerciseIndex: 0,
     isTimerRunning: false,
     timeLeft: isTimeExercise(exercise) ? exercise.reps : 0,
+    isCompleted: false,
   };
 };
 
@@ -122,7 +132,9 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
     workout.structure as Array<ExerciseStructure>
   );
   const firstExercise = exercises[0];
-  const [state, setState] = useState(createInitialState(firstExercise));
+  const [state, setState] = useState<WorkoutState>(
+    createInitialState(firstExercise)
+  );
   const beepInitialRef = useRef<HTMLAudioElement | null>(null);
   const beepLastRef = useRef<HTMLAudioElement | null>(null);
   const currentExercise = exercises[state.exerciseIndex];
@@ -131,7 +143,9 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
   const nextExercise = exercises[state.exerciseIndex + 1];
   const previousExercise = exercises[state.exerciseIndex - 1];
   const canReset =
-    state.timeLeft !== (isTimeExercise(firstExercise) ? firstExercise.reps : 0);
+    state.timeLeft !==
+      (isTimeExercise(firstExercise) ? firstExercise.reps : 0) ||
+    state.isCompleted;
 
   useEffect(() => {
     // Initialize audio elements
@@ -167,7 +181,18 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
   );
 
   const handleNext = () => {
-    if (!hasNextExercise) return;
+    if (!hasNextExercise && !state.isCompleted) {
+      // Move to completed state
+      setState({
+        ...state,
+        isCompleted: true,
+        isTimerRunning: false,
+      });
+      return;
+    }
+
+    if (state.isCompleted) return; // Already completed
+
     setState({
       ...state,
       timeLeft: isTimeExercise(nextExercise) ? nextExercise.reps : 0,
@@ -177,6 +202,20 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
   };
 
   const handlePrevious = () => {
+    if (state.isCompleted) {
+      // Go back from completed state to last exercise
+      setState({
+        ...state,
+        isCompleted: false,
+        exerciseIndex: exercises.length - 1,
+        timeLeft: isTimeExercise(exercises[exercises.length - 1])
+          ? exercises[exercises.length - 1].reps
+          : 0,
+        isTimerRunning: false,
+      });
+      return;
+    }
+
     if (!hasPreviousExercise) return;
     setState({
       ...state,
@@ -222,10 +261,13 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
 
   const calculateProgress = () => {
     const totalExercises = exercises.length;
+    if (state.isCompleted) return 100;
     return (state.exerciseIndex / totalExercises) * 100;
   };
 
   const calculateCircularProgress = () => {
+    if (state.isCompleted) return 100;
+
     const totalTime = currentExercise.reps;
     const remainingTime = state.timeLeft;
     const completedTime = totalTime - remainingTime;
@@ -258,8 +300,41 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
     }
   }, [playSound, state.isTimerRunning, state.timeLeft]);
 
-  if (!currentExercise) {
+  if (!currentExercise && !state.isCompleted) {
     return <div>No current exercise</div>;
+  }
+
+  if (state.isCompleted) {
+    return (
+      <Dialog open={isRunning} onOpenChange={handleClose}>
+        <DialogContent className="h-[calc(100%-2rem)] sm:max-w-[calc(100%-2rem)] flex flex-col">
+          <DialogHeader>
+            <DialogTitle>{workout.name}</DialogTitle>
+          </DialogHeader>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground font-semibold">
+              100%
+            </span>
+            <Progress className="my-4" value={100} />
+          </div>
+          <Card className="flex-1 flex flex-col">
+            <CardHeader className="text-center">
+              <CardTitle className="text-4xl flex justify-center items-center gap-2">
+                <CheckCircle className="text-green-500 w-10 h-10" />
+                Workout completed!
+              </CardTitle>
+              <CardDescription>
+                Great job! You have finished all exercises.
+              </CardDescription>
+            </CardHeader>
+
+            <CardFooter className="mt-auto flex gap-2 items-center justify-center">
+              <Button onClick={handleClose}>Close</Button>
+            </CardFooter>
+          </Card>
+        </DialogContent>
+      </Dialog>
+    );
   }
 
   return (
@@ -333,11 +408,7 @@ export function WorkoutRun({ workout, isRunning, setIsRunning }: Props) {
             >
               {state.isTimerRunning ? <Pause /> : <Play />}
             </Button>
-            <Button
-              size="icon"
-              onClick={handleNext}
-              disabled={!hasNextExercise}
-            >
+            <Button size="icon" onClick={handleNext}>
               <ArrowRight />
             </Button>
           </CardFooter>
