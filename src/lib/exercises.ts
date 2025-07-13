@@ -93,11 +93,6 @@ export const exercises: Exercise[] = [
     description: "Push up to plank",
   },
   {
-    id: "bodyweight-row",
-    name: "Bodyweight row",
-    description: "Bodyweight row",
-  },
-  {
     id: "superman",
     name: "Superman",
     description: "Superman",
