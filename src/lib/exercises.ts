@@ -28,9 +28,19 @@ export const exercises: Exercise[] = [
     description: "Single-leg glute bridge",
   },
   {
+    id: "body-row",
+    name: "Body row",
+    description: "Body row",
+  },
+  {
     id: "bulgarian-split-squat",
     name: "Bulgarian split squat",
     description: "Single-leg squat with rear foot elevated",
+  },
+  {
+    id: "reverse-lunge",
+    name: "Reverse lunge",
+    description: "Reverse lunge",
   },
   {
     id: "copenhagen-adductor",
